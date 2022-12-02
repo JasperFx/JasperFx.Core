@@ -409,16 +409,33 @@ public static class TypeExtensions
         return (T)Activator.CreateInstance(closedType, ctorArgument1, ctorArgument2)!;
     }
 
+    /// <summary>
+    /// Does the two properties match?
+    /// </summary>
+    /// <param name="prop1"></param>
+    /// <param name="prop2"></param>
+    /// <returns></returns>
     public static bool PropertyMatches(this PropertyInfo prop1, PropertyInfo prop2)
     {
         return prop1.DeclaringType == prop2.DeclaringType && prop1.Name == prop2.Name;
     }
 
+    /// <summary>
+    /// Create an instance of the type and cast to T
+    /// </summary>
+    /// <param name="type"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
     public static T Create<T>(this Type type)
     {
         return (T)type.Create();
     }
 
+    /// <summary>
+    /// Create an instance of the type
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
     public static object Create(this Type type)
     {
         return Activator.CreateInstance(type)!;
@@ -446,35 +463,6 @@ public static class TypeExtensions
         throw new Exception($"I don't know how to figure out what this is a collection of. Can you tell me? {type}");
     }
 
-
-    public static void ForAttribute<T>(this Type type, Action<T> action) where T : Attribute
-    {
-        var atts = type.GetTypeInfo().GetCustomAttributes(typeof(T));
-        foreach (T att in atts) action(att);
-    }
-
-    public static void ForAttribute<T>(this Type type, Action<T> action, Action elseDo)
-        where T : Attribute
-    {
-        var atts = type.GetTypeInfo().GetCustomAttributes(typeof(T)).ToArray();
-        foreach (T att in atts) action(att);
-
-        if (!atts.Any())
-        {
-            elseDo();
-        }
-    }
-
-    public static bool HasAttribute<T>(this Type type) where T : Attribute
-    {
-        return type.GetTypeInfo().GetCustomAttributes<T>().Any();
-    }
-
-    public static T? GetAttribute<T>(this Type type) where T : Attribute
-    {
-        return type.GetTypeInfo().GetCustomAttributes<T>().FirstOrDefault();
-    }
-    
     private static readonly Type[] _tupleTypes = new Type[]
     {
         typeof(ValueTuple<>),

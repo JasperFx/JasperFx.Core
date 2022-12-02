@@ -286,6 +286,15 @@ e
     {
         original.ToCamelCase().ShouldBe(transformed);
     }
+
+    [Theory]
+    [InlineData("hello", 100, "hello")]
+    [InlineData("hello how are you?", 18, "hello how are you?")]
+    [InlineData("hello how are you?", 15, "hello how ar...")]
+    public void elid_string(string raw, int length, string expected)
+    {
+        raw.Elid(length).ShouldBe(expected);
+    }
 }
 
 public enum EnvTarget

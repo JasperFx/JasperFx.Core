@@ -10,6 +10,22 @@ namespace JasperFx.Core;
 public static class StringExtensions
 {
     /// <summary>
+    /// "Elid" a string longer than the designated length
+    /// </summary>
+    /// <param name="longString"></param>
+    /// <param name="length"></param>
+    /// <returns></returns>
+    public static string Elid(this string longString, int length)
+    {
+        if (longString.Length > length)
+        {
+            return longString.Substring(0, length - 3) + "...";
+        }
+
+        return longString;
+    }
+    
+    /// <summary>
     /// If the path is rooted, just returns the path.  Otherwise,
     /// combines root & path
     /// </summary>
