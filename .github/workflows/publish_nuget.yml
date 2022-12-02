@@ -22,7 +22,7 @@ jobs:
     - name: Build
       run: dotnet build src/JasperFx.Core/JasperFx.Core.csproj --configuration Release
 
-    - name: Publish Alba
+    - name: Publish JasperFx.Core
       uses: brandedoutcast/publish-nuget@v2.5.2
       with:
           PROJECT_FILE_PATH: src/JasperFx.Core/JasperFx.Core.csproj
