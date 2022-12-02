@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JasperFx.Core", "src\JasperFx.Core\JasperFx.Core.csproj", "{971B26E7-7991-415B-8AF2-C67086F79B54}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JasperFx.Core.Tests", "src\JasperFx.Core.Tests\JasperFx.Core.Tests.csproj", "{D2C993F3-37EC-4382-B17D-58A538C65A4A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{971B26E7-7991-415B-8AF2-C67086F79B54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{971B26E7-7991-415B-8AF2-C67086F79B54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{971B26E7-7991-415B-8AF2-C67086F79B54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{971B26E7-7991-415B-8AF2-C67086F79B54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2C993F3-37EC-4382-B17D-58A538C65A4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2C993F3-37EC-4382-B17D-58A538C65A4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2C993F3-37EC-4382-B17D-58A538C65A4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2C993F3-37EC-4382-B17D-58A538C65A4A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

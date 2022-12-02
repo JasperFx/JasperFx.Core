@@ -1,0 +1,29 @@
+name: Publish Nugets
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup .NET 7
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 7.0.x
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+    - name: Build
+      run: dotnet build src/JasperFx.Core/JasperFx.Core.csproj --configuration Release
+
+    - name: Publish Alba
+      uses: brandedoutcast/publish-nuget@v2.5.2
+      with:
+          PROJECT_FILE_PATH: src/JasperFx.Core/JasperFx.Core.csproj
+          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
