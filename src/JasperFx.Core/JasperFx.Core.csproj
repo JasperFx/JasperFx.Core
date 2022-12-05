@@ -6,7 +6,7 @@
         <Nullable>enable</Nullable>
 
         <Description>Common extension methods and reflection helpers used by JasperFx projects</Description>
-        <Version>0.9.7</Version>
+        <Version>0.9.8</Version>
         <Authors>Jeremy D. Miller</Authors>
         <AssemblyName>JasperFx.Core</AssemblyName>
         <PackageId>JasperFx.Core</PackageId>

@@ -71,7 +71,7 @@ public static class StringExtensions
     /// <returns></returns>
     public static string AppendPath(this string path, params string[] parts)
     {
-        return Path.Combine(parts);
+        return Path.Combine(new string[]{path}.Concat(parts).ToArray());
     }
 
     public static string PathRelativeTo(this string path, string root)
