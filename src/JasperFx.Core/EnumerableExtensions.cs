@@ -221,7 +221,6 @@ namespace JasperFx.Core
         {
             return first.Union(second);
         } 
-        
-        
+
     }
 }
