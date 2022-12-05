@@ -131,18 +131,7 @@ namespace JasperFx.Core
                 if (whereEvaluator(list[i])) list.RemoveAt(i);
             }
         }
-
-        /// <summary>
-        /// Concatenates a string between each item in a list of strings
-        /// </summary>
-        /// <param name="values">The array of strings to join</param>
-        /// <param name="separator">The value to concatenate between items</param>
-        /// <returns></returns>
-        public static string Join(this string[] values, string separator)
-        {
-            return string.Join(separator, values);
-        }
-
+        
         /// <summary>
         /// Performs an action with a counter for each item in a sequence and provides
         /// </summary>
