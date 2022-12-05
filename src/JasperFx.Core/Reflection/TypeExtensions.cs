@@ -23,6 +23,11 @@ public static class TypeExtensions
         typeof(uint?),
         typeof(ulong?)
     };
+    
+    public static bool IsStatic(this Type type)
+    {
+        return type.IsAbstract && type.IsSealed;
+    }
 
     /// <summary>
     ///     Does a hard cast of the object to T.  *Will* throw InvalidCastException
@@ -481,9 +486,43 @@ public static class TypeExtensions
     /// </summary>
     /// <param name="type"></param>
     /// <returns></returns>
-    public static bool IsValueTuple(this Type type)
+    public static bool IsValueTuple(this Type? type)
     {
-        return (type != null && type.IsGenericType) && _tupleTypes.Contains(type.GetGenericTypeDefinition());
+        return type is { IsGenericType: true } && _tupleTypes.Contains(type.GetGenericTypeDefinition());
+    }
+    
+    public static Type GetMemberType(this MemberInfo member)
+    {
+        Type rawType = null;
+
+        if (member is FieldInfo)
+        {
+            rawType = member.As<FieldInfo>().FieldType;
+        }
+
+        if (member is PropertyInfo)
+        {
+            rawType = member.As<PropertyInfo>().PropertyType;
+        }
+
+        return rawType.IsNullable() ? rawType.GetInnerTypeFromNullable() : rawType;
+    }
+
+    public static Type GetRawMemberType(this MemberInfo member)
+    {
+        Type rawType = null;
+
+        if (member is FieldInfo)
+        {
+            rawType = member.As<FieldInfo>().FieldType;
+        }
+
+        if (member is PropertyInfo)
+        {
+            rawType = member.As<PropertyInfo>().PropertyType;
+        }
+
+        return rawType;
     }
 }
 

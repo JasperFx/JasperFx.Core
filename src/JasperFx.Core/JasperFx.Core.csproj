@@ -6,18 +6,21 @@
         <Nullable>enable</Nullable>
 
         <Description>Common extension methods and reflection helpers used by JasperFx projects</Description>
-        <Version>0.9.8</Version>
+        <Version>0.9.9</Version>
         <Authors>Jeremy D. Miller</Authors>
         <AssemblyName>JasperFx.Core</AssemblyName>
         <PackageId>JasperFx.Core</PackageId>
         <PackageProjectUrl>https://github.com/JasperFX/JasperFx.Core</PackageProjectUrl>
         <PackageLicenseUrl>https://github.com/JasperFX/JasperFx.Core/blob/master/LICENSE</PackageLicenseUrl>
-        <PackageIconUrl>https://github.com/JasperFx/JasperFx.Core/blob/main/banner.png?raw=true</PackageIconUrl>
+        <PackageIcon>banner.png</PackageIcon>
         <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
         <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
         <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
         <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
 
     </PropertyGroup>
+    <ItemGroup>
+        <None Include="banner.png" Pack="true" PackagePath="" />
+    </ItemGroup>
 
 </Project>
