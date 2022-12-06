@@ -74,6 +74,12 @@ public static class StringExtensions
         return Path.Combine(new string[]{path}.Concat(parts).ToArray());
     }
 
+    /// <summary>
+    /// Return a relative path from "path" to the "root"
+    /// </summary>
+    /// <param name="path"></param>
+    /// <param name="root"></param>
+    /// <returns></returns>
     public static string PathRelativeTo(this string path, string root)
     {
         var pathParts = path.getPathParts();
@@ -101,22 +107,42 @@ public static class StringExtensions
         return pathParts.Count > 0 ? Path.Combine(pathParts.ToArray()) : string.Empty;
     }
 
+    /// <summary>
+    /// Is the string null or empty?
+    /// </summary>
+    /// <param name="stringValue"></param>
+    /// <returns></returns>
     public static bool IsEmpty([NotNullWhen(false)] this string? stringValue)
     {
         return string.IsNullOrEmpty(stringValue);
     }
 
+    /// <summary>
+    /// Does the string have a non-null, non empty value?
+    /// </summary>
+    /// <param name="stringValue"></param>
+    /// <returns></returns>
     public static bool IsNotEmpty([NotNullWhen(true)] this string? stringValue)
     {
         return !string.IsNullOrEmpty(stringValue);
     }
 
+    /// <summary>
+    /// Carry out an action against the string if it has a non-null, non-empty value
+    /// </summary>
+    /// <param name="stringValue"></param>
+    /// <param name="action"></param>
     public static void IsNotEmpty([NotNullWhen(true)] this string? stringValue, Action<string> action)
     {
         if (stringValue.IsNotEmpty())
             action(stringValue);
     }
 
+    /// <summary>
+    /// Convert a "true" or "false" string to a boolean
+    /// </summary>
+    /// <param name="stringValue"></param>
+    /// <returns></returns>
     public static bool ToBool(this string stringValue)
     {
         if (string.IsNullOrEmpty(stringValue)) return false;
@@ -124,6 +150,7 @@ public static class StringExtensions
         return bool.Parse(stringValue);
     }
 
+    [Obsolete("Prefer string interpolation")]
     public static string ToFormat(this string stringFormat, params object[] args)
     {
         return String.Format(stringFormat, args);
@@ -180,11 +207,22 @@ public static class StringExtensions
         return date.ToString("yyyy'-'MM'-'dd hh':'mm':'ss tt 'GMT'");
     }
 
+    /// <summary>
+    /// Break a comma delimited string into an array of trimmed strings
+    /// </summary>
+    /// <param name="content"></param>
+    /// <returns></returns>
     public static string[] ToDelimitedArray(this string content)
     {
         return content.ToDelimitedArray(',');
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="content"></param>
+    /// <param name="delimiter"></param>
+    /// <returns></returns>
     public static string[] ToDelimitedArray(this string content, char delimiter)
     {
         string[] array = content.Split(delimiter);
@@ -216,11 +254,6 @@ public static class StringExtensions
     public static IList<string> getPathParts(this string path)
     {
         return path.Split(new[] {Path.DirectorySeparatorChar}, StringSplitOptions.RemoveEmptyEntries).ToList();
-    }
-		
-    public static string? DirectoryPath(this string path)
-    {
-        return Path.GetDirectoryName(path);
     }
 
     /// <summary>
@@ -315,7 +348,7 @@ public static class StringExtensions
     public static TEnum ToEnum<TEnum>(this string text) where TEnum : struct
     {
         var enumType = typeof (TEnum);
-        if(!enumType.GetTypeInfo().IsEnum) throw new ArgumentException("{0} is not an Enum".ToFormat(enumType.Name));
+        if(!enumType.GetTypeInfo().IsEnum) throw new ArgumentException($"{enumType.Name} is not an Enum");
         return (TEnum) Enum.Parse(enumType, text, true);
     }
 
@@ -326,7 +359,7 @@ public static class StringExtensions
     /// <returns></returns>
     public static string FileEscape(this string file)
     {
-        return "\"{0}\"".ToFormat(file);
+        return $"\"{file}\"";
     }
         
     /// <summary>

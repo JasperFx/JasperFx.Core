@@ -1,6 +1,6 @@
 namespace JasperFx.Core
 {
-    public class FlatFileWriter : IFlatFileWriter
+    internal class FlatFileWriter : IFlatFileWriter
     {
         public FlatFileWriter(List<string> list)
         {
@@ -11,7 +11,7 @@ namespace JasperFx.Core
         public void WriteProperty(string name, string value)
         {
             List.RemoveAll(x => x.StartsWith(name + "="));
-            List.Add("{0}={1}".ToFormat(name, value));
+            List.Add($"{name}={value}");
         }
 
 

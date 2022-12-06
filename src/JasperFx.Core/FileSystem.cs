@@ -9,11 +9,15 @@ namespace JasperFx.Core
         preserve
     }
 
-    public class FileSystem : IFileSystem
+    public static class FileSystem 
     {
         public const int BufferSize = 32768;
 
-        public void CreateDirectory(string? path)
+        /// <summary>
+        /// Create a directory if it does not already exist
+        /// </summary>
+        /// <param name="path"></param>
+        public static void CreateDirectoryIfNotExists(string? path)
         {
             if (path.IsEmpty()) return;
 
@@ -26,17 +30,12 @@ namespace JasperFx.Core
             dir.Create();
         }
 
-        public long FileSizeOf(string path)
-        {
-            return new FileInfo(path).Length;
-        }
-
-        public void Copy(string source, string destination)
+        public static void Copy(string source, string destination)
         {
             Copy(source, destination, CopyBehavior.overwrite);
         }
 
-        public void Copy(string source, string destination, CopyBehavior behavior)
+        public static void Copy(string source, string destination, CopyBehavior behavior)
         {
             if (IsFile(source))
             {
@@ -48,7 +47,7 @@ namespace JasperFx.Core
             }
         }
 
-        public bool IsFile(string path)
+        public static bool IsFile(string path)
         {
             //resolve the path
             path = Path.GetFullPath(path);
@@ -56,7 +55,7 @@ namespace JasperFx.Core
             if (!File.Exists(path) && !Directory.Exists(path))
             {
                 //TODO change back to IOException when it isn't defined in two assemblies anymore
-                throw new Exception("This path '{0}' doesn't exist!".ToFormat(path));
+                throw new Exception($"This path '{path}' doesn't exist!");
             }
 
             var attr = File.GetAttributes(path);
@@ -64,14 +63,14 @@ namespace JasperFx.Core
             return (attr & FileAttributes.Directory) != FileAttributes.Directory;
         }
 
-        public bool FileExists(string filename)
+        public static bool FileExists(string filename)
         {
             return File.Exists(filename);
         }
 
-        public void WriteStreamToFile(string filename, Stream stream)
+        public static void WriteStreamToFile(string filename, Stream stream)
         {
-            CreateDirectory(Path.GetDirectoryName(filename));
+            CreateDirectoryIfNotExists(Path.GetDirectoryName(filename));
 
             var fileSize = 0;
             using (var fileStream = new FileStream(filename, FileMode.Create, FileAccess.Write))
@@ -92,30 +91,20 @@ namespace JasperFx.Core
             }
         }
 
-        public void WriteStringToFile(string filename, string text)
+        public static void WriteStringToFile(string filename, string text)
         {
-            CreateDirectory(Path.GetDirectoryName(filename));
+            CreateDirectoryIfNotExists(Path.GetDirectoryName(filename));
 
             File.WriteAllText(filename, text);
         }
 
-        public void AppendStringToFile(string filename, string text)
+        public static void AppendStringToFile(string filename, string text)
         {
             File.AppendAllText(filename, text);
         }
 
 
-        public string ReadStringFromFile(string filename)
-        {
-            return File.ReadAllText(filename);
-        }
-
-        public string GetFileName(string path)
-        {
-            return Path.GetFileName(path);
-        }
-
-        public void AlterFlatFile(string path, Action<List<string>> alteration)
+        public static void AlterFlatFile(string path, Action<List<string>> alteration)
         {
             var list = new List<string>();
 
@@ -135,7 +124,7 @@ namespace JasperFx.Core
             }
         }
 
-        public void DeleteDirectory(string directory)
+        public static void DeleteDirectoryIfExists(string directory)
         {
             if (Directory.Exists(directory))
             {
@@ -143,84 +132,27 @@ namespace JasperFx.Core
             }
         }
 
-        public void CleanDirectory(string directory)
+        public static void CleanDirectory(string directory)
         {
             if (directory.IsEmpty()) return;
 
 
-            DeleteDirectory(directory);
+            DeleteDirectoryIfExists(directory);
             Thread.Sleep(10);
 
-            CreateDirectory(directory);
+            CreateDirectoryIfNotExists(directory);
         }
 
-        public bool DirectoryExists(string directory)
-        {
-            return Directory.Exists(directory);
-        }
-
-        public void WriteObjectToFile(string filename, object target)
-        {
-            Debug.WriteLine("Saving to " + filename);
-            var serializer = new XmlSerializer(target.GetType());
-
-            CreateDirectory(GetDirectory(filename));
-
-            using (var stream = new FileStream(filename, FileMode.Create, FileAccess.Write))
-            {
-                serializer.Serialize(stream, target);
-            }
-        }
-
-		public T LoadFromFileOrThrow<T>(string filename) where T : new()
-		{
-			if (!FileExists(filename))
-			{
-				throw new Exception("Unable to deserialize the contents of file {0}. It does not exist or we do not have read access to it.");
-			}
-
-			return LoadFromFile<T>(filename);
-		}
-
-        public T LoadFromFile<T>(string filename) where T : new()
-        {
-            if (!FileExists(filename))
-            {
-	            return new T();
-            }
-
-            var serializer = new XmlSerializer(typeof (T));
-
-            using (var stream = new FileStream(filename, FileMode.Open, FileAccess.Read))
-            {
-                try
-                {
-                    return (T) serializer.Deserialize(stream)!;
-                }
-                catch (Exception e)
-                {
-                    var message = "Unable to deserialize the contents of file {0} into an instance of type {1}"
-                        .ToFormat(filename, typeof (T).FullName!);
-                    throw new Exception(message, e);
-                }
-            }
-        }
-
-        public void LaunchEditor(string filename)
-        {
-            Process.Start("notepad", filename);
-        }
-
-        public void DeleteFile(string filename)
+        public static void DeleteFileIfExists(string filename)
         {
             if (!File.Exists(filename)) return;
 
             File.Delete(filename);
         }
 
-        public void MoveFile(string from, string to)
+        public static void MoveFile(string from, string to)
         {
-            CreateDirectory(Path.GetDirectoryName(to));
+            CreateDirectoryIfNotExists(Path.GetDirectoryName(to));
 
             try
             {
@@ -229,12 +161,12 @@ namespace JasperFx.Core
             //TODO put this back to IOException when there is no longer a conflict
             catch (Exception ex)
             {
-                var msg = "Trying to move '{0}' to '{1}'".ToFormat(from, to);
+                var msg = $"Trying to move '{from}' to '{to}'";
                 throw new Exception(msg, ex);
             }
         }
 
-        public void MoveFiles(string from, string to)
+        public static void MoveFiles(string from, string to)
         {
             var files = Directory.GetFiles(from, "*.*", SearchOption.AllDirectories);
             foreach (var file in files)
@@ -245,23 +177,8 @@ namespace JasperFx.Core
                 MoveFile(file, newPath);
             }
         }
-
-        public void MoveDirectory(string from, string to)
-        {
-            Directory.Move(from, to);
-        }
-
-        public IEnumerable<string> ChildDirectoriesFor(string directory)
-        {
-            if (Directory.Exists(directory))
-            {
-                return Directory.GetDirectories(directory);
-            }
-
-            return new string[0];
-        }
-
-        public IEnumerable<string> FindFiles(string directory, FileSet searchSpecification)
+        
+        public static IEnumerable<string> FindFiles(string directory, FileSet searchSpecification)
         {
             var excluded = searchSpecification.ExcludedFilesFor(directory).ToArray();
             var files = searchSpecification.IncludedFilesFor(directory).ToList();
@@ -270,7 +187,7 @@ namespace JasperFx.Core
             return files;
         }
 
-        public void ReadTextFile(string path, Action<string> callback)
+        public static void ReadTextFile(string path, Action<string> callback)
         {
             if (!FileExists(path)) return;
 
@@ -285,17 +202,7 @@ namespace JasperFx.Core
             }
         }
 
-        public string GetFullPath(string path)
-        {
-            return Path.GetFullPath(path);
-        }
-
-        public string? GetDirectory(string path)
-        {
-            return Path.GetDirectoryName(path);
-        }
-
-        private void internalFileCopy(string source, string destination, CopyBehavior behavior)
+        private static void internalFileCopy(string source, string destination, CopyBehavior behavior)
         {
             var fileName = Path.GetFileName(source);
 
@@ -311,7 +218,7 @@ namespace JasperFx.Core
                 destinationDir = Path.GetDirectoryName(fullDestPath);
             }
 
-            CreateDirectory(destinationDir);
+            CreateDirectoryIfNotExists(destinationDir);
 
             if (!isFile) //aka its a directory
             {
@@ -327,13 +234,12 @@ namespace JasperFx.Core
             }
             catch (Exception ex)
             {
-                var msg = "Was trying to copy '{0}' to '{1}' and encountered an error. :(".ToFormat(fullSourcePath,
-                                                                                                    fullDestPath);
+                var msg = $"Was trying to copy '{fullSourcePath}' to '{fullDestPath}' and encountered an error. :(";
                 throw new Exception(msg, ex);
             }
         }
 
-        private void internalDirectoryCopy(string source, string destination, CopyBehavior behavior)
+        private static void internalDirectoryCopy(string source, string destination, CopyBehavior behavior)
         {
             var files = Directory.GetFiles(source, "*.*", SearchOption.AllDirectories);
             files.Each(file =>
@@ -343,9 +249,9 @@ namespace JasperFx.Core
             });
         }
 
-        private bool destinationIsFile(string destination)
+        private static bool destinationIsFile(string destination)
         {
-            if (FileExists(destination) || DirectoryExists(destination))
+            if (FileExists(destination) || Directory.Exists(destination))
             {
                 //it exists 
                 return IsFile(destination);

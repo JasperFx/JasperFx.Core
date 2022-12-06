@@ -3,6 +3,9 @@ using System.Reflection;
 
 namespace JasperFx.Core.Reflection
 {
+    /// <summary>
+    /// Can be used to create compiled Func's to retrieve a value from the TTarget type
+    /// </summary>
     public static class LambdaBuilder
     {
         public static Func<TTarget, TProperty> GetProperty<TTarget, TProperty>(PropertyInfo property)
@@ -20,6 +23,13 @@ namespace JasperFx.Core.Reflection
             return lambda.Compile();
         }
 
+        /// <summary>
+        /// Create an Action to set a property on the type TTarget
+        /// </summary>
+        /// <param name="property"></param>
+        /// <typeparam name="TTarget"></typeparam>
+        /// <typeparam name="TProperty"></typeparam>
+        /// <returns></returns>
         public static Action<TTarget, TProperty>? SetProperty<TTarget, TProperty>(PropertyInfo property)
         {
             var target = Expression.Parameter(property.DeclaringType!, "target");

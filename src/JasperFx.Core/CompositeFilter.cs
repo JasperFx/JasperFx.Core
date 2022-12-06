@@ -1,10 +1,26 @@
 ﻿namespace JasperFx.Core;
 
+/// <summary>
+/// Create complex allow and/or deny list logical sets
+/// </summary>
+/// <typeparam name="T"></typeparam>
 public class CompositeFilter<T>
 {
+    /// <summary>
+    /// If empty, this includes everything. Use this for allow filter
+    /// </summary>
     public CompositePredicate<T> Includes { get; set; } = new();
+    
+    /// <summary>
+    /// If empty, this has no effect. Use this for deny filters
+    /// </summary>
     public CompositePredicate<T> Excludes { get; set; } = new();
 
+    /// <summary>
+    /// Does the item meet all the include and exclude criteria?
+    /// </summary>
+    /// <param name="target"></param>
+    /// <returns></returns>
     public bool Matches(T target)
     {
         return Includes.MatchesAny(target) && Excludes.DoesNotMatchAny(target);

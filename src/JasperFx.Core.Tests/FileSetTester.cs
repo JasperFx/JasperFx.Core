@@ -18,7 +18,7 @@ namespace JasperFx.Core.Tests
             }
 
             Directory.CreateDirectory("target");
-            new FileSystem().CleanDirectory("target");
+            FileSystem.CleanDirectory("target");
 
             theFileSet = new FileSet();
         }
@@ -92,7 +92,7 @@ namespace JasperFx.Core.Tests
             writeFile("config/zeppelin.yaml");
             writeFile("hitchhiker.config");
 
-            new FileSystem().DeleteDirectory("data");
+            FileSystem.DeleteDirectoryIfExists("data");
 
             theFileSet = new FileSet()
             {
@@ -204,7 +204,7 @@ namespace JasperFx.Core.Tests
             theFileSet.Include = "*.xml";
             theFileSet.Exclude = "a.xml";
 
-            new FileSystem().FindFiles("target", theFileSet).Select(x => Path.GetFileName(x)).OrderBy(x => x).ShouldHaveTheSameElementsAs("b.xml", "c.xml");
+            FileSystem.FindFiles("target", theFileSet).Select(x => Path.GetFileName(x)).OrderBy(x => x).ShouldHaveTheSameElementsAs("b.xml", "c.xml");
         }
 
         [Fact]

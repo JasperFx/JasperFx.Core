@@ -21,24 +21,22 @@ namespace JasperFx.Core.Tests
         [Fact]
         public void copy_with_preserve()
         {
-            var system = new FileSystem();
-            system.WriteStringToFile("a.txt", "something");
-            system.WriteStringToFile("b.txt", "else");
-            system.Copy("a.txt", "b.txt", CopyBehavior.preserve);
+            FileSystem.WriteStringToFile("a.txt", "something");
+            FileSystem.WriteStringToFile("b.txt", "else");
+            FileSystem.Copy("a.txt", "b.txt", CopyBehavior.preserve);
 
-            system.ReadStringFromFile("b.txt").ShouldBe("else");
+            File.ReadAllText("b.txt").ShouldBe("else");
 
         }
 
         [Fact]
         public void copy_with_overwrite()
         {
-            var system = new FileSystem();
-            system.WriteStringToFile("a.txt", "something");
-            system.WriteStringToFile("b.txt", "else");
-            system.Copy("a.txt", "b.txt", CopyBehavior.overwrite);
+            FileSystem.WriteStringToFile("a.txt", "something");
+            FileSystem.WriteStringToFile("b.txt", "else");
+            FileSystem.Copy("a.txt", "b.txt", CopyBehavior.overwrite);
 
-            system.ReadStringFromFile("b.txt").ShouldBe("something"); 
+            File.ReadAllText("b.txt").ShouldBe("something"); 
         }
 
         [Fact]
@@ -124,14 +122,12 @@ namespace JasperFx.Core.Tests
     public class FileSystemIntegrationTester : IDisposable
     {
         private readonly TestDirectory _testDirectory;
-        private FileSystem _fileSystem;
         private string _basePath;
 
         public FileSystemIntegrationTester()
         {
             _testDirectory = new TestDirectory();
             _testDirectory.ChangeDirectory();
-            _fileSystem = new FileSystem();
             _basePath = Path.GetTempPath();
         }
 
@@ -144,7 +140,7 @@ namespace JasperFx.Core.Tests
             var pathDoesNotExist = Path.Combine(_basePath, randomName());
             var stream = new MemoryStream(new byte[] { 55, 66, 77, 88 });
 
-            _fileSystem.WriteStreamToFile(Path.Combine(pathDoesNotExist, "file.txt"), stream);
+            FileSystem.WriteStreamToFile(Path.Combine(pathDoesNotExist, "file.txt"), stream);
 
             Directory.Exists(pathDoesNotExist).ShouldBeTrue();
         }
@@ -163,7 +159,7 @@ namespace JasperFx.Core.Tests
             }
             stream.Position = 0;
 
-            _fileSystem.WriteStreamToFile(path, stream);
+            FileSystem.WriteStreamToFile(path, stream);
 
             var fileInfo = new FileInfo(path);
             fileInfo.Exists.ShouldBeTrue();
@@ -176,12 +172,12 @@ namespace JasperFx.Core.Tests
             var fromDir = Path.Combine(_basePath, randomName());
             var fromPath = Path.Combine(fromDir, "file.txt");
             var stream = new MemoryStream(new byte[] { 55, 66, 77, 88 });
-            _fileSystem.WriteStreamToFile(fromPath, stream);
+            FileSystem.WriteStreamToFile(fromPath, stream);
 
             var toDir = Path.Combine(_basePath, randomName());
             var toPath = Path.Combine(toDir, "newfilename.txt");
 
-            _fileSystem.MoveFile(fromPath, toPath);
+            FileSystem.MoveFile(fromPath, toPath);
 
             Directory.Exists(toDir).ShouldBeTrue();
         }
@@ -191,12 +187,12 @@ namespace JasperFx.Core.Tests
         {
             var stream = new MemoryStream(new byte[] { 55, 66, 77, 88 });
             var fromPath = Path.Combine(_basePath, randomName());
-            _fileSystem.WriteStreamToFile(fromPath, stream);
+            FileSystem.WriteStreamToFile(fromPath, stream);
 
             var toDir = Path.Combine(_basePath, randomName());
             var toPath = Path.Combine(toDir, "newfilename.txt");
 
-            _fileSystem.MoveFile(fromPath, toPath);
+            FileSystem.MoveFile(fromPath, toPath);
 
             File.Exists(toPath).ShouldBeTrue();
         }
@@ -217,15 +213,12 @@ namespace JasperFx.Core.Tests
     public class Searching_up_the_tree_for_a_dir : IDisposable
     {
         private readonly TestDirectory _testDirectory;
-        private IFileSystem _fileSystem;
-
         public Searching_up_the_tree_for_a_dir()
         {
             _testDirectory = new TestDirectory();
             _testDirectory.ChangeDirectory();
-            _fileSystem = new FileSystem();
-            _fileSystem.CreateDirectory("deep".AppendPath("a", "b", "c"));
-            _fileSystem.CreateDirectory("deep".AppendPath("config"));
+            FileSystem.CreateDirectoryIfNotExists("deep".AppendPath("a", "b", "c"));
+            FileSystem.CreateDirectoryIfNotExists("deep".AppendPath("config"));
         }
 
         public void Dispose()

@@ -14,11 +14,6 @@ namespace JasperFx.Core.Tests
         }
 
 
-        [Fact]
-        public void when_GetKey_not_set_should_throw()
-        {
-            Exception<NotImplementedException>.ShouldBeThrownBy(() => cache.GetKey(2));
-        }
 
         [Fact]
         public void when_key_not_found_should_throw_by_default()
@@ -30,36 +25,11 @@ namespace JasperFx.Core.Tests
         }
 
         [Fact]
-        public void predicate_exists()
-        {
-            cache.Fill(Key, 42);
-            cache.Exists(i => i == 42).ShouldBeTrue();
-        }
-
-        [Fact]
-        public void predicate_finds()
-        {
-            cache.Fill(Key, 42);
-            cache.Find(i => i == 42).ShouldBe(42);
-            cache.Find(i => i == 43).ShouldBe(0);
-        }
-
-        [Fact]
-        public void get_first_value()
-        {
-            cache.Fill(Key, 42);
-            cache.Fill("anotherKey", 99);
-            cache.First.ShouldBe(42);
-            cache.ClearAll();
-            cache.First.ShouldBe(0);
-        }
-
-        [Fact]
         public void get_all_keys()
         {
             cache.Fill(Key, 42);
             cache.Count().ShouldBe(1);
-            cache.Has(Key).ShouldBeTrue();
+            cache.Contains(Key).ShouldBeTrue();
         }
 
         [Fact]
@@ -77,9 +47,9 @@ namespace JasperFx.Core.Tests
         public void can_remove()
         {
             cache[Key] = 42;
-            cache.Has(Key).ShouldBeTrue();
+            cache.Contains(Key).ShouldBeTrue();
             cache.Remove(Key);
-            cache.Has(Key).ShouldBeFalse();
+            cache.Contains(Key).ShouldBeFalse();
         }
 
         [Fact]

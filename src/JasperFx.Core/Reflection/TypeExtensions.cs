@@ -491,9 +491,15 @@ public static class TypeExtensions
         return type is { IsGenericType: true } && _tupleTypes.Contains(type.GetGenericTypeDefinition());
     }
     
-    public static Type GetMemberType(this MemberInfo member)
+    /// <summary>
+    /// Return the member type regardless of whether this is a Field or Property. Will return
+    /// the inner type in case of being a Nullable<T>
+    /// </summary>
+    /// <param name="member"></param>
+    /// <returns></returns>
+    public static Type? GetMemberType(this MemberInfo member)
     {
-        Type rawType = null;
+        Type? rawType = null;
 
         if (member is FieldInfo)
         {
@@ -504,25 +510,25 @@ public static class TypeExtensions
         {
             rawType = member.As<PropertyInfo>().PropertyType;
         }
+
+        if (rawType == null) return null;
 
         return rawType.IsNullable() ? rawType.GetInnerTypeFromNullable() : rawType;
     }
 
-    public static Type GetRawMemberType(this MemberInfo member)
+    /// <summary>
+    /// Gets the raw member type, regardless of whether the member is a field or property
+    /// </summary>
+    /// <param name="member"></param>
+    /// <returns></returns>
+    public static Type? GetRawMemberType(this MemberInfo member)
     {
-        Type rawType = null;
-
-        if (member is FieldInfo)
+        return member switch
         {
-            rawType = member.As<FieldInfo>().FieldType;
-        }
-
-        if (member is PropertyInfo)
-        {
-            rawType = member.As<PropertyInfo>().PropertyType;
-        }
-
-        return rawType;
+            FieldInfo f => f.FieldType,
+            PropertyInfo p => p.PropertyType,
+            _ => default
+        };
     }
 }
 

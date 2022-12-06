@@ -5,9 +5,7 @@ namespace JasperFx.Core
 {
     public class LightweightCache<TKey, TValue> : IEnumerable<TValue> where TKey: notnull
     {
-        private readonly IDictionary<TKey, TValue> _values;
-
-        private Func<TValue, TKey> _getKey = delegate { throw new NotImplementedException(); };
+        private ImHashMap<TKey, TValue> _values = ImHashMap<TKey, TValue>.Empty;
 
         private Func<TKey, TValue> _onMissing = delegate (TKey key) {
                                                                         var message = $"Key '{key}' could not be found";
@@ -32,66 +30,43 @@ namespace JasperFx.Core
 
         public LightweightCache(IDictionary<TKey, TValue> dictionary)
         {
-            _values = dictionary;
+            foreach (var pair in dictionary)
+            {
+                _values = _values.AddOrUpdate(pair.Key, pair.Value);
+            }
         }
 
-
+        /// <summary>
+        /// Provide a function to create missing values
+        /// </summary>
         public Func<TKey, TValue> OnMissing
         {
             set => _onMissing = value;
         }
 
-        public Func<TValue, TKey> GetKey
-        {
-            get { return _getKey; }
-            set { _getKey = value; }
-        }
+        public int Count => _values.Count();
 
-        public int Count
-        {
-            get { return _values.Count; }
-        }
-
-        public TValue? First
-        {
-            get
-            {
-                foreach (var pair in _values)
-                {
-                    return pair.Value;
-                }
-
-                return default(TValue);
-            }
-        }
-
+        /// <summary>
+        /// Access the value by key. This will create a new item if one does not already exist
+        /// </summary>
+        /// <param name="key"></param>
         public TValue this[TKey key]
         {
             get
             {
-                if (!_values.TryGetValue(key, out TValue? value))
+                if (!_values.TryFind(key, out TValue? value))
                 {
                     value = _onMissing(key);
 
                     if (value != null)
                     {
-                        _values[key] = value;
+                        _values = _values.AddOrUpdate(key, value);
                     }
                 }
 
                 return value;
             }
-            set
-            {
-                if (_values.ContainsKey(key))
-                {
-                    _values[key] = value;
-                }
-                else
-                {
-                    _values.Add(key, value);
-                }
-            }
+            set => _values = _values.AddOrUpdate(key, value);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -101,7 +76,7 @@ namespace JasperFx.Core
 
         public IEnumerator<TValue> GetEnumerator()
         {
-            return _values.Values.GetEnumerator();
+            return _values.Enumerate().Select(x => x.Value).GetEnumerator();
         }
 
         /// <summary>
@@ -114,104 +89,70 @@ namespace JasperFx.Core
             Fill(key, _onMissing(key));
         }
 
+        /// <summary>
+        /// Fills in a value for this key *if* it does not already exist
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
         public void Fill(TKey key, TValue value)
         {
-            if (_values.ContainsKey(key))
+            if (_values.Contains(key))
             {
                 return;
             }
 
-            _values.Add(key, value);
+            _values = _values.AddOrUpdate(key, value);
         }
 
-        public bool TryRetrieve(TKey key, [MaybeNullWhen(false)] out TValue value)
+        /// <summary>
+        /// Return the item if it exists
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public bool TryFind(TKey key, [MaybeNullWhen(false)] out TValue value)
         {
             value = default;
 
-            if (_values.ContainsKey(key))
+            if (_values.TryFind(key, out value))
             {
-                value = _values[key];
                 return true;
             }
 
             return false;
         }
 
-        public void Each(Action<TValue> action)
+        public bool Contains(TKey key)
         {
-            foreach (var pair in _values)
-            {
-                action(pair.Value);
-            }
+            return _values.Contains(key);
         }
 
-        public void Each(Action<TKey, TValue> action)
-        {
-            foreach (var pair in _values)
-            {
-                action(pair.Key, pair.Value);
-            }
-        }
-
-        public bool Has(TKey key)
-        {
-            return _values.ContainsKey(key);
-        }
-
-        public bool Exists(Predicate<TValue> predicate)
-        {
-            var returnValue = false;
-
-            Each(delegate (TValue value) { returnValue |= predicate(value); });
-
-            return returnValue;
-        }
-
-        public TValue? Find(Predicate<TValue> predicate)
-        {
-            foreach (var pair in _values)
-            {
-                if (predicate(pair.Value))
-                {
-                    return pair.Value;
-                }
-            }
-
-            return default;
-        }
-
-        public TValue[] GetAll()
-        {
-            var returnValue = new TValue[Count];
-            _values.Values.CopyTo(returnValue, 0);
-
-            return returnValue;
-        }
-
+        /// <summary>
+        /// Remove a single item from this cache
+        /// </summary>
+        /// <param name="key"></param>
         public void Remove(TKey key)
         {
-            if (_values.ContainsKey(key))
-            {
-                _values.Remove(key);
-            }
+            _values = _values.Remove(key);
         }
 
+        /// <summary>
+        /// Remove all items from this cache
+        /// </summary>
         public void Clear()
         {
-            _values.Clear();
+            _values = ImHashMap<TKey, TValue>.Empty;
         }
 
+        /// <summary>
+        /// Carry out an action against a member of this cache
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="action"></param>
         public void WithValue(TKey key, Action<TValue> action)
         {
-            if (_values.ContainsKey(key))
-            {
-                action(this[key]);
-            }
+            action(this[key]);
         }
 
-        public void ClearAll()
-        {
-            _values.Clear();
-        }
     }
 }

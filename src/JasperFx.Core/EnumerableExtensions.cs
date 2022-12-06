@@ -180,16 +180,10 @@ namespace JasperFx.Core
         /// <param name="enumerable"></param>
         /// <param name="func"></param>
         /// <returns></returns>
-        public static TReturn FirstValue<TItem, TReturn>(this IEnumerable<TItem> enumerable, Func<TItem, TReturn> func)
+        public static TReturn? FirstValue<TItem, TReturn>(this IEnumerable<TItem> enumerable, Func<TItem, TReturn?> func)
             where TReturn : class
         {
-            foreach (TItem item in enumerable)
-            {
-                TReturn @object = func(item);
-                if (@object != null) return @object;
-            }
-
-            return null;
+            return enumerable.Select(func).FirstOrDefault(@object => @object != null);
         }
 
         /// <summary>
@@ -213,14 +207,12 @@ namespace JasperFx.Core
         /// <returns></returns>
         public static IList<T> AddRange<T>(this IList<T> list, IEnumerable<T> items)
         {
-            items.Each(list.Add);
+            foreach (var item in items)
+            {
+                list.Add(item);
+            }
             return list;
         }
-
-        public static IEnumerable<T> UnionWith<T>(this IEnumerable<T> first, params T[] second)
-        {
-            return first.Union(second);
-        } 
-
+        
     }
 }

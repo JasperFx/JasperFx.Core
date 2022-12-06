@@ -2,6 +2,11 @@
 
 public static class EnumerableTypeExtensions
 {
+    /// <summary>
+    /// Is the type an enumerable of some sort? Includes arrays
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
     public static bool IsEnumerable(this Type type)
     {
         if (type.IsArray) return true;
@@ -9,7 +14,12 @@ public static class EnumerableTypeExtensions
         return type.IsGenericType && _enumerableTypes.Contains(type.GetGenericTypeDefinition());
     }
 
-    public static Type DetermineElementType(this Type serviceType)
+    /// <summary>
+    /// Tells you the element type of various forms of enumerables or arrays
+    /// </summary>
+    /// <param name="serviceType"></param>
+    /// <returns></returns>
+    public static Type? DetermineElementType(this Type serviceType)
     {
         if (serviceType.IsArray)
         {

@@ -16,7 +16,7 @@
             }
             Directory.SetCurrentDirectory(testDataPath);
             
-            new FileSystem().CleanDirectory(testDataPath);
+            FileSystem.CleanDirectory(testDataPath);
         }
 
         public void Dispose()

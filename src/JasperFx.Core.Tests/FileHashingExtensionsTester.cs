@@ -18,8 +18,8 @@ namespace JasperFx.Core.Tests
         {
             var file1 = "a.txt";
             var file2 = "b.txt";
-            new FileSystem().WriteStringToFile(file1, "something");
-            new FileSystem().WriteStringToFile(file2, "else");
+            FileSystem.WriteStringToFile(file1, "something");
+            FileSystem.WriteStringToFile(file2, "else");
 
             file1.GetModifiedDateFileText().ShouldBe(file1.GetModifiedDateFileText());
             file2.GetModifiedDateFileText().ShouldBe(file2.GetModifiedDateFileText());
@@ -35,13 +35,13 @@ namespace JasperFx.Core.Tests
         public void hash_by_modified_is_dependent_upon_the_last_modified_time()
         {
             var file1 = "a.txt";
-            new FileSystem().WriteStringToFile(file1, "something");
+            FileSystem.WriteStringToFile(file1, "something");
 			
 			Thread.Sleep(1000);
 			
             var hash1 = file1.HashByModifiedDate();
 
-            new FileSystem().WriteStringToFile(file1, "else");
+            FileSystem.WriteStringToFile(file1, "else");
 			
 			Thread.Sleep(1000);
 
@@ -56,9 +56,9 @@ namespace JasperFx.Core.Tests
             var file1 = "a.txt";
             var file2 = "b.txt";
             var file3 = "c.txt";
-            new FileSystem().WriteStringToFile(file1, "something");
-            new FileSystem().WriteStringToFile(file2, "else");
-            new FileSystem().WriteStringToFile(file3, "altogether");
+            FileSystem.WriteStringToFile(file1, "something");
+            FileSystem.WriteStringToFile(file2, "else");
+            FileSystem.WriteStringToFile(file3, "altogether");
 			
 			Thread.Sleep(1000);
 			
@@ -73,7 +73,7 @@ namespace JasperFx.Core.Tests
             var hash4 = new string[] { file1, file2 }.HashByModifiedDate();
             hash4.ShouldNotBe(hash1);
 
-            new FileSystem().WriteStringToFile(file1, "else");
+            FileSystem.WriteStringToFile(file1, "else");
 			
 			Thread.Sleep(1000);
             

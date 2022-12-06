@@ -133,7 +133,7 @@ namespace JasperFx.Core
             return new FileSet(){
 				DeepSearch = false,
                 Exclude = null,
-                Include = assemblyNames.OrderBy(x => x).Select(x => "{0}.dll;{0}.exe".ToFormat(x)).Join(";")
+                Include = assemblyNames.OrderBy(x => x).Select(x => $"{x}.dll;{x}.exe").Join(";")
             };
         }
 
@@ -142,7 +142,7 @@ namespace JasperFx.Core
             return new FileSet(){
 				DeepSearch = false,
                 Exclude = null,
-                Include = assemblyNames.OrderBy(x => x).Select(x => "{0}.pdb".ToFormat(x)).Join(";")
+                Include = assemblyNames.OrderBy(x => x).Select(x => $"{x}.pdb").Join(";")
             };
         }
 
