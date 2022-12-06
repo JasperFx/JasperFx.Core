@@ -69,6 +69,8 @@ namespace JasperFx.Core
             set => _values = _values.AddOrUpdate(key, value);
         }
 
+        public IEnumerable<TKey> Keys() => _values.Enumerate().Select(x => x.Key);
+
         IEnumerator IEnumerable.GetEnumerator()
         {
             return ((IEnumerable<TValue>)this).GetEnumerator();

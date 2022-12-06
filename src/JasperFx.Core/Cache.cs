@@ -43,6 +43,8 @@ namespace JasperFx.Core
                 _values = _values.AddOrUpdate(pair.Key, pair.Value);
             }
         }
+        
+        public IEnumerable<TKey> Keys() => _values.Enumerate().Select(x => x.Key);
 
         public Action<TValue> OnAddition
         {
