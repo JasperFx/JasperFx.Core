@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using System;
 
 namespace JasperFx.Core;
 
@@ -19,7 +20,7 @@ public static class StringExtensions
     {
         if (longString.Length > length)
         {
-            return longString.Substring(0, length - 3) + "...";
+            return string.Concat(longString.AsSpan(0, length - 3), "...");
         }
 
         return longString;
@@ -126,7 +127,7 @@ public static class StringExtensions
 
     public static string ToFormat(this string stringFormat, params object[] args)
     {
-        return String.Format(stringFormat, args);
+        return string.Format(stringFormat, args);
     }
 
     /// <summary>
@@ -142,9 +143,6 @@ public static class StringExtensions
     /// </summary>
     public static string Capitalize(this string stringValue)
     {
-#if NET451
-            return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(stringValue);
-#else
         StringBuilder result = new StringBuilder(stringValue);
         result[0] = char.ToUpper(result[0]);
         for (int i = 1; i < result.Length; ++i)
@@ -153,7 +151,6 @@ public static class StringExtensions
                 result[i] = char.ToUpper(result[i]);
         }
         return result.ToString();
-#endif
     }
 
     /// <summary>
@@ -260,7 +257,7 @@ public static class StringExtensions
     /// <returns></returns>
     public static string ToHash(this string text)
     {
-        var parts = MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(text)).Select(b => b.ToString("x2"));
+        var parts = MD5.HashData(Encoding.UTF8.GetBytes(text)).Select(b => b.ToString("x2"));
         return string.Join("", parts);
     }
 
@@ -345,20 +342,9 @@ public static class StringExtensions
             return text;
         }
 
-        return text.Substring(0, pos) + replace + text.Substring(pos + search.Length);
+        return string.Concat(text.AsSpan(0, pos), replace, text.AsSpan(pos + search.Length));
     }
-        
-    /// <summary>
-    /// string.Contains() with finer grained case sensitivity settings
-    /// </summary>
-    /// <param name="source"></param>
-    /// <param name="value"></param>
-    /// <param name="comparison"></param>
-    /// <returns></returns>
-    public static bool Contains(this string source, string value, StringComparison comparison)
-    {
-        return source.IndexOf(value, comparison) >= 0;
-    }
+
 
     /// <summary>
     /// string.Contains() with OrdinalIgnoreCase semantics
