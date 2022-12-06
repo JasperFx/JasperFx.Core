@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using System;
 
 namespace JasperFx.Core;
 
@@ -19,7 +20,7 @@ public static class StringExtensions
     {
         if (longString.Length > length)
         {
-            return longString.Substring(0, length - 3) + "...";
+            return string.Concat(longString.AsSpan(0, length - 3), "...");
         }
 
         return longString;
@@ -153,7 +154,7 @@ public static class StringExtensions
     [Obsolete("Prefer string interpolation")]
     public static string ToFormat(this string stringFormat, params object[] args)
     {
-        return String.Format(stringFormat, args);
+        return string.Format(stringFormat, args);
     }
 
     /// <summary>
@@ -169,9 +170,6 @@ public static class StringExtensions
     /// </summary>
     public static string Capitalize(this string stringValue)
     {
-#if NET451
-            return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(stringValue);
-#else
         StringBuilder result = new StringBuilder(stringValue);
         result[0] = char.ToUpper(result[0]);
         for (int i = 1; i < result.Length; ++i)
@@ -180,7 +178,6 @@ public static class StringExtensions
                 result[i] = char.ToUpper(result[i]);
         }
         return result.ToString();
-#endif
     }
 
     /// <summary>
@@ -293,8 +290,8 @@ public static class StringExtensions
     /// <returns></returns>
     public static string ToHash(this string text)
     {
-        var parts = MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(text)).Select(b => b.ToString("x2"));
-        return string.Join("", parts);
+        var parts = MD5.HashData(Encoding.UTF8.GetBytes(text));
+        return Convert.ToHexString(parts).ToLowerInvariant();
     }
 
     /// <summary>
@@ -324,32 +321,34 @@ public static class StringExtensions
             return s;
         }
 
-        char[] chars = s.ToCharArray();
-
-        for (int i = 0; i < chars.Length; i++)
+        return string.Create(s.Length, s, (span, str) =>
         {
-            if (i == 1 && !char.IsUpper(chars[i]))
+            str.CopyTo(span);
+
+            for (int i = 0; i < span.Length; i++)
             {
-                break;
+                if (i == 1 && !char.IsUpper(span[i]))
+                {
+                    break;
+                }
+
+                bool hasNext = (i + 1 < span.Length);
+                if (i > 0 && hasNext && !char.IsUpper(span[i + 1]))
+                {
+                    break;
+                }
+
+                span[i] = char.ToLowerInvariant(span[i]);
             }
-
-            bool hasNext = (i + 1 < chars.Length);
-            if (i > 0 && hasNext && !char.IsUpper(chars[i + 1]))
-            {
-                break;
-            }
-
-            chars[i] = char.ToLowerInvariant(chars[i]);
-        }
-
-        return new string(chars);
+        });
     }
 
     public static TEnum ToEnum<TEnum>(this string text) where TEnum : struct
     {
         var enumType = typeof (TEnum);
+
         if(!enumType.GetTypeInfo().IsEnum) throw new ArgumentException($"{enumType.Name} is not an Enum");
-        return (TEnum) Enum.Parse(enumType, text, true);
+        return Enum.Parse<TEnum>(text, true);
     }
 
     /// <summary>
@@ -378,20 +377,9 @@ public static class StringExtensions
             return text;
         }
 
-        return text.Substring(0, pos) + replace + text.Substring(pos + search.Length);
+        return string.Concat(text.AsSpan(0, pos), replace, text.AsSpan(pos + search.Length));
     }
-        
-    /// <summary>
-    /// string.Contains() with finer grained case sensitivity settings
-    /// </summary>
-    /// <param name="source"></param>
-    /// <param name="value"></param>
-    /// <param name="comparison"></param>
-    /// <returns></returns>
-    public static bool Contains(this string source, string value, StringComparison comparison)
-    {
-        return source.IndexOf(value, comparison) >= 0;
-    }
+
 
     /// <summary>
     /// string.Contains() with OrdinalIgnoreCase semantics

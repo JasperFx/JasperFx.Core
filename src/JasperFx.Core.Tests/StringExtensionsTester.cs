@@ -212,6 +212,13 @@ e
         "else".ToHash().ShouldNotBe("something".ToHash());
     }
 
+    [Fact]
+    public void to_hash_produces_expected_format()
+    {
+        var somethingHash = "437b930db84b8079c2dd804a71936b5f";
+        somethingHash.ShouldBe("something".ToHash());
+    }
+
 
     [Fact]
     public void to_enum()

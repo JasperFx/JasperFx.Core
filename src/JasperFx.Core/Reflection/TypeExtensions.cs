@@ -152,7 +152,7 @@ public static class TypeExtensions
 
     public static bool IsConcreteWithDefaultCtor(this Type type)
     {
-        return type.IsConcrete() && type.GetConstructor(new Type[0]) != null;
+        return type.IsConcrete() && type.GetConstructor(Type.EmptyTypes) != null;
     }
 
     public static Type? FindInterfaceThatCloses(this Type type, Type openType)
@@ -499,17 +499,12 @@ public static class TypeExtensions
     /// <returns></returns>
     public static Type? GetMemberType(this MemberInfo member)
     {
-        Type? rawType = null;
-
-        if (member is FieldInfo)
+        var rawType = member switch
         {
-            rawType = member.As<FieldInfo>().FieldType;
-        }
-
-        if (member is PropertyInfo)
-        {
-            rawType = member.As<PropertyInfo>().PropertyType;
-        }
+            FieldInfo fieldInfo => fieldInfo.FieldType,
+            PropertyInfo propertyInfo => propertyInfo.PropertyType,
+            _ => null
+        };
 
         if (rawType == null) return null;
 
