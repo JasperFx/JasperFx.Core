@@ -257,8 +257,8 @@ public static class StringExtensions
     /// <returns></returns>
     public static string ToHash(this string text)
     {
-        var parts = MD5.HashData(Encoding.UTF8.GetBytes(text)).Select(b => b.ToString("x2"));
-        return string.Join("", parts);
+        var parts = MD5.HashData(Encoding.UTF8.GetBytes(text));
+        return Convert.ToHexString(parts).ToLowerInvariant();
     }
 
     /// <summary>
@@ -288,32 +288,33 @@ public static class StringExtensions
             return s;
         }
 
-        char[] chars = s.ToCharArray();
-
-        for (int i = 0; i < chars.Length; i++)
+        return string.Create(s.Length, s, (span, str) =>
         {
-            if (i == 1 && !char.IsUpper(chars[i]))
+            str.CopyTo(span);
+
+            for (int i = 0; i < span.Length; i++)
             {
-                break;
+                if (i == 1 && !char.IsUpper(span[i]))
+                {
+                    break;
+                }
+
+                bool hasNext = (i + 1 < span.Length);
+                if (i > 0 && hasNext && !char.IsUpper(span[i + 1]))
+                {
+                    break;
+                }
+
+                span[i] = char.ToLowerInvariant(span[i]);
             }
-
-            bool hasNext = (i + 1 < chars.Length);
-            if (i > 0 && hasNext && !char.IsUpper(chars[i + 1]))
-            {
-                break;
-            }
-
-            chars[i] = char.ToLowerInvariant(chars[i]);
-        }
-
-        return new string(chars);
+        });
     }
 
     public static TEnum ToEnum<TEnum>(this string text) where TEnum : struct
     {
         var enumType = typeof (TEnum);
         if(!enumType.GetTypeInfo().IsEnum) throw new ArgumentException("{0} is not an Enum".ToFormat(enumType.Name));
-        return (TEnum) Enum.Parse(enumType, text, true);
+        return Enum.Parse<TEnum>(text, true);
     }
 
     /// <summary>
