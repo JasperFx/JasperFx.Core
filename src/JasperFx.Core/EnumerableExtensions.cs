@@ -8,7 +8,6 @@ namespace JasperFx.Core
     /// </summary>
     public static class EnumerableExtensions
     {
-        // TODO -- this needs to go, use the patched version from Lamar
 
         /// <summary>
         /// Find the index within the enumerable of the first item that matches the condition
