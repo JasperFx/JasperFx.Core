@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Linq.Expressions;
 using JasperFx.Core.Reflection;
 using NSubstitute;
@@ -38,6 +39,20 @@ public class ReflectionExtensionsTester
         data.IsAnonymousType().ShouldBeFalse();
     }
 
+    [Fact]
+    public void try_find_attribute_hit()
+    {
+        typeof(Simple2Class).TryGetAttribute<DescriptionAttribute>(out var att).ShouldBeTrue();
+        att.Description.ShouldBe("Hey!");
+    }
+
+    [Fact]
+    public void try_find_attribute_miss()
+    {
+        typeof(SimpleClass).TryGetAttribute<DescriptionAttribute>(out var att).ShouldBeFalse();
+        att.ShouldBeNull();
+    }
+
     public class PropertyHolder
     {
         public int Age { get; set; }
@@ -53,6 +68,7 @@ public class ReflectionExtensionsTester
     {
     }
 
+    [Description("Hey!")]
     public class Simple2Class
     {
         public Simple2Class(string name)

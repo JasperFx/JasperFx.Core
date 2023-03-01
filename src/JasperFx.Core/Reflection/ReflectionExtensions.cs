@@ -5,6 +5,20 @@ namespace JasperFx.Core.Reflection;
 
 public static class ReflectionExtensions
 {
+    /// <summary>
+    /// Tries to find a custom attribute, and finds the first of the type
+    /// </summary>
+    /// <param name="provider"></param>
+    /// <param name="att"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public static bool TryGetAttribute<T>(this ICustomAttributeProvider provider, out T att) where T : Attribute
+    {
+        att = provider.GetCustomAttributes(typeof(T), true).OfType<T>().FirstOrDefault();
+
+        return att != null;
+    }
+    
     public static T? GetAttribute<T>(this MemberInfo provider) where T : Attribute
     {
         var atts = provider.GetCustomAttributes(typeof(T), true);
