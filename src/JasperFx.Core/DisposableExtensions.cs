@@ -19,5 +19,28 @@ namespace JasperFx.Core
             }
         }
 
+        /// <summary>
+        /// Will loop through the collection and call DisposeAsync() on
+        /// any member that is IAsyncDisposable, and Dispose() on any other
+        /// item that is IDisposable
+        /// </summary>
+        /// <param name="objects"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static async ValueTask MaybeDisposeAllAsync<T>(this IEnumerable<T> objects)
+        {
+            foreach (var o in objects)      
+            {
+                if (o is IAsyncDisposable ad)
+                {
+                    await ad.DisposeAsync();
+                }
+                else if (o is IDisposable d)
+                {
+                    d.Dispose();
+                }
+            }
+        }
+
     }
 }

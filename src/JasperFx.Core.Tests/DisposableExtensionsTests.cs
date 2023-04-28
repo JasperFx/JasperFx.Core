@@ -1,9 +1,32 @@
-﻿using Shouldly;
+﻿using NSubstitute;
+using Shouldly;
 
 namespace JasperFx.Core.Tests
 {
     public class DisposableExtensionsTests
     {
+        [Fact]
+        public async Task maybe_dispose_all()
+        {
+            var disposable = Substitute.For<IDisposable>();
+            var asyncDisposable1 = Substitute.For<IAsyncDisposable>();
+            var asyncDisposable2 = Substitute.For<IAsyncDisposable>();
+            var objects = new List<object>
+            {
+                disposable,
+                asyncDisposable1,
+                asyncDisposable2,
+                new object(),
+                new object()
+            };
+
+            await objects.MaybeDisposeAllAsync();
+            
+            disposable.Received().Dispose();
+            await asyncDisposable1.Received().DisposeAsync();
+            await asyncDisposable2.Received().DisposeAsync();
+        }
+        
         [Fact]
         public void swallow_exceptions()
         {
@@ -24,4 +47,6 @@ namespace JasperFx.Core.Tests
             public bool DisposeWasCalled { get; set; }
         }
     }
+
+
 }
