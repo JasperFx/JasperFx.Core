@@ -1,8 +1,8 @@
 using System.Reflection;
 
-namespace JasperFx.Core.Reflection;
+namespace JasperFx.Core.Tests.TypeScanning;
 
-public static class TypeExtensions
+internal static class TypeExtensions
 {
     private static readonly IList<Type> _integerTypes = new List<Type>
     {
@@ -23,11 +23,6 @@ public static class TypeExtensions
         typeof(uint?),
         typeof(ulong?)
     };
-    
-    public static bool IsStatic(this Type type)
-    {
-        return type.IsAbstract && type.IsSealed;
-    }
 
     /// <summary>
     ///     Does a hard cast of the object to T.  *Will* throw InvalidCastException
@@ -40,7 +35,7 @@ public static class TypeExtensions
         return (T)target;
     }
 
-    public static bool IsNullableOfT(this Type? theType)
+    public static bool IsNullableOfT(this Type theType)
     {
         if (theType == null)
         {
@@ -62,7 +57,7 @@ public static class TypeExtensions
                (theType.IsNullableOfT() && theType.GetGenericArguments()[0] == otherType);
     }
 
-    public static bool CanBeCastTo<T>(this Type? type)
+    public static bool CanBeCastTo<T>(this Type type)
     {
         if (type == null)
         {
@@ -74,7 +69,7 @@ public static class TypeExtensions
         return CanBeCastTo(type, destinationType);
     }
 
-    public static bool CanBeCastTo(this Type? type, Type destinationType)
+    public static bool CanBeCastTo(this Type type, Type destinationType)
     {
         if (type == null)
         {
@@ -89,17 +84,17 @@ public static class TypeExtensions
         return destinationType.IsAssignableFrom(type);
     }
 
-    public static bool IsInNamespace(this Type? type, string nameSpace)
+    public static bool IsInNamespace(this Type type, string nameSpace)
     {
         if (type == null)
         {
             return false;
         }
 
-        return type.Namespace?.StartsWith(nameSpace) ?? false;
+        return type.Namespace.StartsWith(nameSpace);
     }
 
-    public static bool IsOpenGeneric(this Type? type)
+    public static bool IsOpenGeneric(this Type type)
     {
         if (type == null)
         {
@@ -110,7 +105,7 @@ public static class TypeExtensions
         return typeInfo.IsGenericTypeDefinition || typeInfo.ContainsGenericParameters;
     }
 
-    public static bool IsGenericEnumerable(this Type? type)
+    public static bool IsGenericEnumerable(this Type type)
     {
         if (type == null)
         {
@@ -121,7 +116,7 @@ public static class TypeExtensions
         return genericArgs.Length == 1 && typeof(IEnumerable<>).MakeGenericType(genericArgs).IsAssignableFrom(type);
     }
 
-    public static bool IsConcreteTypeOf<T>(this Type? pluggedType)
+    public static bool IsConcreteTypeOf<T>(this Type pluggedType)
     {
         if (pluggedType == null)
         {
@@ -152,10 +147,10 @@ public static class TypeExtensions
 
     public static bool IsConcreteWithDefaultCtor(this Type type)
     {
-        return type.IsConcrete() && type.GetConstructor(Type.EmptyTypes) != null;
+        return type.IsConcrete() && type.GetConstructor(new Type[0]) != null;
     }
 
-    public static Type? FindInterfaceThatCloses(this Type type, Type openType)
+    public static Type FindInterfaceThatCloses(this Type type, Type openType)
     {
         if (type == typeof(object))
         {
@@ -187,10 +182,10 @@ public static class TypeExtensions
 
         return typeInfo.BaseType == typeof(object)
             ? null
-            : typeInfo.BaseType?.FindInterfaceThatCloses(openType);
+            : typeInfo.BaseType.FindInterfaceThatCloses(openType);
     }
 
-    public static Type? FindParameterTypeTo(this Type type, Type openType)
+    public static Type FindParameterTypeTo(this Type type, Type openType)
     {
         var interfaceType = type.FindInterfaceThatCloses(openType);
         return interfaceType?.GetGenericArguments().FirstOrDefault();
@@ -202,7 +197,7 @@ public static class TypeExtensions
         return typeInfo.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
     }
 
-    public static bool Closes(this Type? type, Type openType)
+    public static bool Closes(this Type type, Type openType)
     {
         if (type == null)
         {
@@ -245,34 +240,6 @@ public static class TypeExtensions
     }
 
 
-    public static string GetName(this Type type)
-    {
-        var typeInfo = type.GetTypeInfo();
-        if (typeInfo.IsGenericType)
-        {
-            var parameters = type.GetGenericArguments().Select(x => x.GetName()).ToArray();
-            var parameterList = string.Join(", ", parameters);
-            return $"{type.Name}<{parameterList}>";
-        }
-
-        return type.Name;
-    }
-
-    [Obsolete("Use version from JasperFx.CodeGeneration")]
-    public static string? GetFullName(this Type type)
-    {
-        var typeInfo = type.GetTypeInfo();
-        if (typeInfo.IsGenericType)
-        {
-            var parameters = type.GetGenericArguments().Select(x => x.GetName()).ToArray();
-            var parameterList = string.Join(", ", parameters);
-            return $"{type.Name}<{parameterList}>";
-        }
-
-        return type.FullName;
-    }
-
-
     public static bool IsString(this Type type)
     {
         return type == typeof(string);
@@ -290,7 +257,7 @@ public static class TypeExtensions
         return typeInfo.IsPrimitive || IsString(type) || typeInfo.IsEnum;
     }
 
-    public static bool IsConcrete(this Type? type)
+    public static bool IsConcrete(this Type type)
     {
         if (type == null)
         {
@@ -399,54 +366,42 @@ public static class TypeExtensions
     public static T CloseAndBuildAs<T>(this Type openType, params Type[] parameterTypes)
     {
         var closedType = openType.MakeGenericType(parameterTypes);
-        return (T)Activator.CreateInstance(closedType)!;
+        return (T)Activator.CreateInstance(closedType);
     }
 
     public static T CloseAndBuildAs<T>(this Type openType, object ctorArgument, params Type[] parameterTypes)
     {
         var closedType = openType.MakeGenericType(parameterTypes);
-        return (T)Activator.CreateInstance(closedType, ctorArgument)!;
+        return (T)Activator.CreateInstance(closedType, ctorArgument);
     }
 
     public static T CloseAndBuildAs<T>(this Type openType, object ctorArgument1, object ctorArgument2,
         params Type[] parameterTypes)
     {
         var closedType = openType.MakeGenericType(parameterTypes);
-        return (T)Activator.CreateInstance(closedType, ctorArgument1, ctorArgument2)!;
+        return (T)Activator.CreateInstance(closedType, ctorArgument1, ctorArgument2);
     }
 
-    /// <summary>
-    /// Does the two properties match?
-    /// </summary>
-    /// <param name="prop1"></param>
-    /// <param name="prop2"></param>
-    /// <returns></returns>
     public static bool PropertyMatches(this PropertyInfo prop1, PropertyInfo prop2)
     {
         return prop1.DeclaringType == prop2.DeclaringType && prop1.Name == prop2.Name;
     }
 
-    /// <summary>
-    /// Create an instance of the type and cast to T
-    /// </summary>
-    /// <param name="type"></param>
-    /// <typeparam name="T"></typeparam>
-    /// <returns></returns>
     public static T Create<T>(this Type type)
     {
         return (T)type.Create();
     }
 
-    /// <summary>
-    /// Create an instance of the type
-    /// </summary>
-    /// <param name="type"></param>
-    /// <returns></returns>
     public static object Create(this Type type)
     {
-        return Activator.CreateInstance(type)!;
+        return Activator.CreateInstance(type);
     }
 
+
+    public static Type DeriveElementType(this Type type)
+    {
+        return type.GetElementType() ?? type.GetGenericArguments().FirstOrDefault();
+    }
 
     public static Type IsAnEnumerationOf(this Type type)
     {
@@ -457,7 +412,7 @@ public static class TypeExtensions
 
         if (type.IsArray)
         {
-            return type.GetElementType()!;
+            return type.GetElementType();
         }
 
         if (type.GetTypeInfo().IsGenericType)
@@ -469,62 +424,32 @@ public static class TypeExtensions
         throw new Exception($"I don't know how to figure out what this is a collection of. Can you tell me? {type}");
     }
 
-    private static readonly Type[] _tupleTypes = new Type[]
+
+    public static void ForAttribute<T>(this Type type, Action<T> action) where T : Attribute
     {
-        typeof(ValueTuple<>),
-        typeof(ValueTuple<,>),
-        typeof(ValueTuple<,,>),
-        typeof(ValueTuple<,,,>),
-        typeof(ValueTuple<,,,,>),
-        typeof(ValueTuple<,,,,,>),
-        typeof(ValueTuple<,,,,,,>),
-        typeof(ValueTuple<,,,,,,,>)
-
-    };
-
-    /// <summary>
-    /// Is the type a .NET tuple?
-    /// </summary>
-    /// <param name="type"></param>
-    /// <returns></returns>
-    public static bool IsValueTuple(this Type? type)
-    {
-        return type is { IsGenericType: true } && _tupleTypes.Contains(type.GetGenericTypeDefinition());
-    }
-    
-    /// <summary>
-    /// Return the member type regardless of whether this is a Field or Property. Will return
-    /// the inner type in case of being a Nullable<T>
-    /// </summary>
-    /// <param name="member"></param>
-    /// <returns></returns>
-    public static Type? GetMemberType(this MemberInfo member)
-    {
-        var rawType = member switch
-        {
-            FieldInfo fieldInfo => fieldInfo.FieldType,
-            PropertyInfo propertyInfo => propertyInfo.PropertyType,
-            _ => null
-        };
-
-        if (rawType == null) return null;
-
-        return rawType.IsNullable() ? rawType.GetInnerTypeFromNullable() : rawType;
+        var atts = type.GetTypeInfo().GetCustomAttributes(typeof(T));
+        foreach (T att in atts) action(att);
     }
 
-    /// <summary>
-    /// Gets the raw member type, regardless of whether the member is a field or property
-    /// </summary>
-    /// <param name="member"></param>
-    /// <returns></returns>
-    public static Type? GetRawMemberType(this MemberInfo member)
+    public static void ForAttribute<T>(this Type type, Action<T> action, Action elseDo)
+        where T : Attribute
     {
-        return member switch
+        var atts = type.GetTypeInfo().GetCustomAttributes(typeof(T)).ToArray();
+        foreach (T att in atts) action(att);
+
+        if (!atts.Any())
         {
-            FieldInfo f => f.FieldType,
-            PropertyInfo p => p.PropertyType,
-            _ => default
-        };
+            elseDo();
+        }
+    }
+
+    public static bool HasAttribute<T>(this Type type) where T : Attribute
+    {
+        return type.GetTypeInfo().GetCustomAttributes<T>().Any();
+    }
+
+    public static T GetAttribute<T>(this Type type) where T : Attribute
+    {
+        return type.GetTypeInfo().GetCustomAttributes<T>().FirstOrDefault();
     }
 }
-
