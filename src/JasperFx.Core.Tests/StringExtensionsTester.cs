@@ -313,6 +313,28 @@ e
         str2.GetStableHashCode().ShouldBe(str2.GetStableHashCode());
         str1.GetStableHashCode().ShouldNotBe(str2.GetStableHashCode());
     }
+
+    [Theory]
+    [InlineData("foo", "bar", false)]
+    [InlineData("foobar", "bar", false)]
+    [InlineData("foobar", "foo", true)]
+    [InlineData("Foobar", "foo", true)]
+    [InlineData("Foobar", "fOo", true)]
+    public void starts_with_ignore_case(string one, string prefix, bool expected)
+    {
+        one.StartsWithIgnoreCase(prefix).ShouldBe(expected);
+    }
+    
+    [Theory]
+    [InlineData("foo", "bar", false)]
+    [InlineData("foobar", "br", false)]
+    [InlineData("foobar", "bar", true)]
+    [InlineData("Foobar", "BAR", true)]
+    [InlineData("FooBaR", "Bar", true)]
+    public void ends_with_ignore_case(string one, string suffix, bool expected)
+    {
+        one.EndsWithIgnoreCase(suffix).ShouldBe(expected);
+    }
 }
 
 public enum EnvTarget

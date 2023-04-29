@@ -164,6 +164,22 @@ public static class StringExtensions
     {
         return thisString.Equals(otherString, StringComparison.CurrentCultureIgnoreCase);
     }
+    
+    /// <summary>
+    /// Performs a case-insensitive comparison of the first string starting with the second string
+    /// </summary>
+    public static bool StartsWithIgnoreCase(this string thisString, string prefix)
+    {
+        return thisString.StartsWith(prefix, StringComparison.CurrentCultureIgnoreCase);
+    }
+    
+    /// <summary>
+    /// Performs a case-insensitive comparison of the first string ending with the second string
+    /// </summary>
+    public static bool EndsWithIgnoreCase(this string thisString, string suffix)
+    {
+        return thisString.EndsWith(suffix, StringComparison.CurrentCultureIgnoreCase);
+    }
 
     /// <summary>
     /// Converts the string to Title Case
