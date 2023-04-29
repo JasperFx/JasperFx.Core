@@ -244,32 +244,16 @@ public static class TypeExtensions
         return nullableType.GetGenericArguments()[0];
     }
 
-
+    [Obsolete("Favor ShortNameInCode(), this is just a passthrough")]
     public static string GetName(this Type type)
     {
-        var typeInfo = type.GetTypeInfo();
-        if (typeInfo.IsGenericType)
-        {
-            var parameters = type.GetGenericArguments().Select(x => x.GetName()).ToArray();
-            var parameterList = string.Join(", ", parameters);
-            return $"{type.Name}<{parameterList}>";
-        }
-
-        return type.Name;
+        return type.ShortNameInCode();
     }
 
-    [Obsolete("Use version from JasperFx.CodeGeneration")]
+    [Obsolete("Favor FullNameInCode(), this is just a passthrough")]
     public static string? GetFullName(this Type type)
     {
-        var typeInfo = type.GetTypeInfo();
-        if (typeInfo.IsGenericType)
-        {
-            var parameters = type.GetGenericArguments().Select(x => x.GetName()).ToArray();
-            var parameterList = string.Join(", ", parameters);
-            return $"{type.Name}<{parameterList}>";
-        }
-
-        return type.FullName;
+        return type.FullNameInCode();
     }
 
 
@@ -526,5 +510,7 @@ public static class TypeExtensions
             _ => default
         };
     }
+    
+
 }
 

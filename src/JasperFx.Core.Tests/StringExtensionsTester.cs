@@ -302,6 +302,17 @@ e
     {
         raw.Elid(length).ShouldBe(expected);
     }
+
+    [Fact]
+    public void stable_hash()
+    {
+        var str1 = Guid.NewGuid().ToString();
+        var str2 = Guid.NewGuid().ToString();
+        
+        str1.GetStableHashCode().ShouldBe(str1.GetStableHashCode());
+        str2.GetStableHashCode().ShouldBe(str2.GetStableHashCode());
+        str1.GetStableHashCode().ShouldNotBe(str2.GetStableHashCode());
+    }
 }
 
 public enum EnvTarget

@@ -219,4 +219,39 @@ public static class ReflectionExtensions
         return sb.ToString();
     }
     
+    /// <summary>
+    /// Is a method asynchronous?
+    /// </summary>
+    /// <param name="method"></param>
+    /// <returns></returns>
+    public static bool IsAsync(this MethodInfo method)
+    {
+        if (method.ReturnType == null)
+        {
+            return false;
+        }
+
+        if (method.ReturnType == typeof(ValueTask) || method.ReturnType.Closes(typeof(ValueTask<>)))
+        {
+            return true;
+        }
+
+        return method.ReturnType == typeof(Task) || method.ReturnType.Closes(typeof(Task<>));
+    }
+    
+    public static bool CanBeOverridden(this MethodInfo method)
+    {
+        if (method.IsAbstract)
+        {
+            return true;
+        }
+
+        if (method.IsVirtual && !method.IsFinal)
+        {
+            return true;
+        }
+
+        return false;
+    }
+    
 }

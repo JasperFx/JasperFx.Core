@@ -86,4 +86,75 @@ public class ReflectionExtensionsTester
         {
         }
     }
+
+    public class TargetService
+    {
+        public void Go()
+        {
+            
+        }
+
+        public ValueTask SomeValueTask()
+        {
+            return new ValueTask();
+        }
+
+        public Task AsyncThing()
+        {
+            return Task.CompletedTask;
+        }
+    }
+
+    [Fact]
+    public void is_async()
+    {
+        ReflectionHelper.GetMethod<TargetService>(x => x.Go())
+            .IsAsync().ShouldBeFalse();
+
+        ReflectionHelper.GetMethod<TargetService>(x => x.SomeValueTask())
+            .IsAsync().ShouldBeTrue();
+        
+        ReflectionHelper.GetMethod<TargetService>(x => x.AsyncThing())
+            .IsAsync().ShouldBeTrue();
+    }
+    
+
+    public abstract class AbstractThing
+    {
+        public void NotOverridden(){}
+        public abstract void Abstract();
+
+        public virtual void Virtual(){}
+    }
+
+    public class ConcreteThing : AbstractThing
+    {
+        public override void Abstract()
+        {
+            throw new NotImplementedException();
+        }
+
+        public sealed override void Virtual()
+        {
+            
+        }
+    }
+
+    [Fact]
+    public void can_be_overridden()
+    {
+        ReflectionHelper.GetMethod<AbstractThing>(x => x.NotOverridden())
+            .CanBeOverridden().ShouldBeFalse();
+        
+        ReflectionHelper.GetMethod<AbstractThing>(x => x.Abstract())
+            .CanBeOverridden().ShouldBeTrue();
+        
+        ReflectionHelper.GetMethod<AbstractThing>(x => x.Virtual())
+            .CanBeOverridden().ShouldBeTrue();
+
+        var method = typeof(ConcreteThing).GetMethod(nameof(ConcreteThing.Virtual));
+        
+        method
+            .CanBeOverridden().ShouldBeFalse();
+    }
 }
