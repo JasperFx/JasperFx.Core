@@ -40,6 +40,12 @@ namespace JasperFx.Core.Tests
         }
 
         [Fact]
+        public void create_directory_if_not_exists_does_nothing_if_it_is_just_a_file_name()
+        {
+            FileSystem.CreateDirectoryIfNotExists("a.txt");
+        }
+
+        [Fact]
         public void get_relative_path()
         {
             fullPath("a", "b", "1.bat").PathRelativeTo(fullPath("a", "b"))

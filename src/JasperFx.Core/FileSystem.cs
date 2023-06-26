@@ -21,6 +21,8 @@ namespace JasperFx.Core
         {
             if (path.IsEmpty()) return;
 
+            if (!path.Contains('/') || !path.Contains(Path.PathSeparator)) return;
+
             var dir = new DirectoryInfo(path);
             if (dir.Exists)
             {
