@@ -204,6 +204,6 @@ public static class TypeNameExtensions
     {
         var prefix = type.Name.Split('`').First();
         var hash = Math.Abs(type.FullNameInCode().GetStableHashCode());
-        return $"{prefix}{suffix}{hash}";
+        return $"{prefix}{suffix}{hash}".Replace("-", "");
     }
 }
