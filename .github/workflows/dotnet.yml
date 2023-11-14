@@ -35,4 +35,4 @@ jobs:
         dotnet-version: 8.0.x
 
     - name: Test
-      run: dotnet test src/JasperFx.Core/JasperFx.Core.csproj
+      run: dotnet test src/JasperFx.Core.Tests/JasperFx.Core.Tests.csproj
