@@ -3,16 +3,8 @@ using Shouldly;
 namespace JasperFx.Core.Tests
 {
     
-    public class FileHashingExtensionsTester : IDisposable
+    public class FileHashingExtensionsTester 
     {
-        private readonly TestDirectory _testDirectory;
-
-        public FileHashingExtensionsTester()
-        {
-            _testDirectory = new TestDirectory();
-            _testDirectory.ChangeDirectory();
-        }
-
         [Fact]
         public void hash_by_modified_is_repeatable()
         {
@@ -82,9 +74,5 @@ namespace JasperFx.Core.Tests
             hash5.ShouldNotBe(hash1);
         }
 
-        public void Dispose()
-        {
-            _testDirectory.Dispose();
-        }
     }
 }

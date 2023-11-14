@@ -15,7 +15,7 @@ public class StringExtensionsTester
     }
 
     [Fact]
-    public void parent_directory_ending_with_directory_seperator()
+    public void parent_directory_ending_with_directory_separator()
     {
         var path = ".".ToFullPath();
         (path + Path.DirectorySeparatorChar).ParentDirectory().ShouldBe(Path.GetDirectoryName(path));

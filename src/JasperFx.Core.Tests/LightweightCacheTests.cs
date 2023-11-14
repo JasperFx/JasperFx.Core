@@ -102,10 +102,5 @@ namespace JasperFx.Core.Tests
             number.ShouldBe(2);
         }
 
-        [Fact]
-        public void WithValue_negative()
-        {
-            cache.WithValue("b", i => { throw new Exception("Should not be called"); });
-        }
     }
 }

@@ -151,10 +151,10 @@ namespace JasperFx.Core
         /// </summary>
         /// <param name="key"></param>
         /// <param name="action"></param>
+        [Obsolete("This will be removed in future versions. Favor TryFind()")]
         public void WithValue(TKey key, Action<TValue> action)
         {
             action(this[key]);
         }
-
     }
 }
