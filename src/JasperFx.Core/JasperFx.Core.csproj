@@ -1,10 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-
         <Description>Common extension methods and reflection helpers used by JasperFx projects</Description>
         <Version>1.5.0</Version>
         <Authors>Jeremy D. Miller</Authors>
@@ -12,15 +8,6 @@
         <PackageId>JasperFx.Core</PackageId>
         <PackageProjectUrl>https://github.com/JasperFX/JasperFx.Core</PackageProjectUrl>
         <PackageLicenseUrl>https://github.com/JasperFX/JasperFx.Core/blob/master/LICENSE</PackageLicenseUrl>
-        <PackageIcon>../../jasperfx.jpg</PackageIcon>
-        <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
-        <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-        <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
-        <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
 
     </PropertyGroup>
-    <ItemGroup>
-        <None Include="jasper-icon.png" Pack="true" PackagePath="" />
-    </ItemGroup>
-
 </Project>

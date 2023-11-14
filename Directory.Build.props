@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <PropertyGroup>
+    <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <LangVersion>10.0</LangVersion>
+    <Authors>Jeremy D. Miller;Babu Annamalai;Oskar Dudycz;Joona-Pekka Kokko</Authors>
+    <DebugType>portable</DebugType>
+
+    <PackageIconUrl>https://github.com/JasperFx/JasperFx.CodeGeneration/blob/main/jasper-icon.png?raw=true</PackageIconUrl>
+    <PackageProjectUrl>https:/github.com/jasperfx/JasperFx.CodeGeneration</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <NoWarn>1570;1571;1572;1573;1574;1587;1591;1701;1702;1711;1735;0618</NoWarn>
+
+    <PackageProjectUrl>http://jasperfx.github.io/JasperFx.CodeGeneration</PackageProjectUrl>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
+    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
+	
+	<nullable>enable</nullable>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <None Include="../../jasper-icon.png" Pack="true" PackagePath="jasper-icon" />
+  </ItemGroup>
+</Project>
