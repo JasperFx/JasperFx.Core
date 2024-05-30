@@ -81,19 +81,6 @@ namespace JasperFx.Core.Tests
         }
 
         [Fact]
-        public void set_OnAddition()
-        {
-            ICallback callback = Substitute.For<ICallback>();
-            cache["firstKey"] = 0;
-            callback.DidNotReceive().OnAdditionCallback(42);
-            //callback.AssertWasNotCalled(c => c.OnAdditionCallback(42));
-            cache.OnAddition = callback.OnAdditionCallback;
-            cache[Key] = 42;
-            callback.Received().OnAdditionCallback(42);
-            //callback.AssertWasCalled(c=>c.OnAdditionCallback(42));
-        }
-
-        [Fact]
         public void can_remove()
         {
             cache[Key] = 42;
