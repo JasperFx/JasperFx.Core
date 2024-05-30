@@ -94,16 +94,6 @@ internal static class TypeExtensions
         return type.Namespace.StartsWith(nameSpace);
     }
 
-    public static bool IsOpenGeneric(this Type type)
-    {
-        if (type == null)
-        {
-            return false;
-        }
-
-        var typeInfo = type.GetTypeInfo();
-        return typeInfo.IsGenericTypeDefinition || typeInfo.ContainsGenericParameters;
-    }
 
     public static bool IsGenericEnumerable(this Type type)
     {

@@ -2,8 +2,6 @@
 using System.Reflection;
 using JasperFx.Core.TypeScanning;
 
-[assembly: IgnoreAssembly]
-
 namespace JasperFx.Core.TypeScanning;
 
 /// <summary>

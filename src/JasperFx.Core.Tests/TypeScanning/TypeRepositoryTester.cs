@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using JasperFx.Core.Reflection;
 using JasperFx.Core.TypeScanning;
 using Shouldly;
 

@@ -1,4 +1,5 @@
 using System.Reflection;
+using JasperFx.Core.Reflection;
 
 namespace JasperFx.Core.TypeScanning;
 
@@ -110,16 +111,3 @@ public class AssemblyTypes
     }
 }
 
-internal static class TypeExtensions
-{
-    public static bool IsOpenGeneric(this Type? type)
-    {
-        if (type == null)
-        {
-            return false;
-        }
-
-        var typeInfo = type.GetTypeInfo();
-        return typeInfo.IsGenericTypeDefinition || typeInfo.ContainsGenericParameters;
-    }
-}
