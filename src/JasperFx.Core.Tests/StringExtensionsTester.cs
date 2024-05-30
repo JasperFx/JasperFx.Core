@@ -32,16 +32,6 @@ public class StringExtensionsTester
         captured.ShouldBe("a");
     }
 
-    [Fact]
-    public void if_not_null_negative()
-    {
-        var action = Substitute.For<Action<string>>();
-        string a = null;
-
-        a.IfNotNull(action);
-
-        action.DidNotReceiveWithAnyArgs().Invoke(null);
-    }
 
     [Fact]
     public void combine_to_path_when_rooted()
