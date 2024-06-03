@@ -19,7 +19,7 @@ public class FindAllTypesFilter : IRegistrationConvention
     {
         if (_serviceType.IsOpenGeneric())
         {
-            var scanner = new GenericConnectionScanner(_serviceType, _lifetime);
+            var scanner = new GenericConnectionScanner(_serviceType);
             scanner.ScanTypes(types, services);
         }
         else

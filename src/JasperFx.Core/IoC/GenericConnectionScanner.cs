@@ -8,13 +8,14 @@ internal class GenericConnectionScanner : IRegistrationConvention
 {
     private readonly IList<Type> _concretions = new List<Type>();
     private readonly IList<Type> _interfaces = new List<Type>();
-    private readonly ServiceLifetime _lifetime;
     private readonly Type _openType;
+    private readonly Func<Type,ServiceLifetime> _lifetimeRule;
 
-    public GenericConnectionScanner(Type openType, ServiceLifetime lifetime = ServiceLifetime.Transient)
+    public GenericConnectionScanner(Type openType, Func<Type, ServiceLifetime>? lifetimeRule = null)
     {
         _openType = openType;
-        _lifetime = lifetime;
+        _lifetimeRule = lifetimeRule;
+        _lifetimeRule ??= _ => ServiceLifetime.Scoped;
 
         if (!_openType.IsOpenGeneric())
         {
@@ -45,7 +46,7 @@ internal class GenericConnectionScanner : IRegistrationConvention
         foreach (var @interface in _interfaces)
         {
             var exactMatches = _concretions.Where(x => x.CanBeCastTo(@interface)).ToArray();
-            foreach (var type in exactMatches) services.Add(new ServiceDescriptor(@interface, type, _lifetime));
+            foreach (var type in exactMatches) services.Add(new ServiceDescriptor(@interface, type, _lifetimeRule(type)));
 
             if (!@interface.IsOpenGeneric())
             {
@@ -70,8 +71,9 @@ internal class GenericConnectionScanner : IRegistrationConvention
             {
                 try
                 {
+                    var concreteType = type.MakeGenericType(@interface.GetGenericArguments());
                     services.Add(new ServiceDescriptor(@interface,
-                        type.MakeGenericType(@interface.GetGenericArguments()), _lifetime));
+                        concreteType, _lifetimeRule(concreteType)));
                 }
                 catch (Exception)
                 {

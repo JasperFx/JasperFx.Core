@@ -179,6 +179,17 @@ public static class ReflectionExtensions
             null, Type.EmptyTypes, null) != null;
     }
 
+    /// <summary>
+    /// Does this type have any constructors with arguments?
+    /// </summary>
+    /// <param name="t"></param>
+    /// <returns></returns>
+    public static bool HasConstructorsWithArguments(this Type t)
+    {
+        return t.GetConstructors(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+            .Any(x => x.GetParameters().Any());
+    }
+
     // http://stackoverflow.com/a/15273117/426840
     /// <summary>
     ///     Is the object an anonymous type that is not within a .Net

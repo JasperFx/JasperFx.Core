@@ -222,4 +222,10 @@ public interface IAssemblyScanner
     void AssembliesFromPath(string path,
         Func<Assembly, bool> assemblyFilter);
 
+    /// <summary>
+    /// Scans for ServiceType's and Concrete Types that close the given open generic type
+    /// </summary>
+    /// <param name="openGenericType"></param>
+    /// <param name="lifetimeRule">Configurable rule about how the lifetime is determined</param>
+    void ConnectImplementationsToTypesClosing(Type openGenericType, Func<Type, ServiceLifetime> lifetimeRule);
 }

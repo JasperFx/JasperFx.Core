@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using JasperFx.Core.IoC;
+using JasperFx.Core.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using Widgets1;
@@ -12,6 +13,7 @@ public class type_scanning_end_to_end
     public void can_configure_plugin_families_via_dsl()
     {
         var registry = new ServiceCollection();
+        registry.AddSingleton<IRanger, RedRanger>();
         registry.Scan(x =>
         {
             x.TheCallingAssembly();
@@ -31,6 +33,7 @@ public class type_scanning_end_to_end
     public void can_find_the_closed_finders()
     {
         var x = new ServiceCollection();
+        x.AddSingleton<IRanger, RedRanger>();
         x.Scan(o =>
         {
             o.TheCallingAssembly();
@@ -231,12 +234,38 @@ public class type_scanning_end_to_end
         container.GetServices<IRanger>().Single().ShouldBeOfType<Ranger>();
     }
 
+    [Fact]
+    public void connect_implementations_with_lifetime_rule()
+    {
+        var services = new ServiceCollection();
+        services.AddScoped<IRanger, Ranger>();
+        services.Scan(x =>
+        {
+            x.AssemblyContainingType<IRanger>();
+            x.ConnectImplementationsToTypesClosing(typeof(IFinder<>), type => type.HasConstructorsWithArguments()
+                ? ServiceLifetime.Scoped
+                : ServiceLifetime.Singleton);
+        });
+
+        var container = services.BuildServiceProvider();
+
+        var scope1 = container.CreateScope();
+
+        var scope2 = container.CreateScope();
+        
+        scope1.ServiceProvider.GetServices<IFinder<int>>().ShouldBeSameAs(scope2.ServiceProvider.GetServices<IFinder<int>>());
+        scope1.ServiceProvider.GetServices<IFinder<string>>().ShouldNotBeSameAs(scope2.ServiceProvider.GetServices<IFinder<string>>());
+    }
+
     public interface IFinder<T>
     {
     }
 
     public class StringFinder : IFinder<string>
     {
+        public StringFinder(IRanger ranger)
+        {
+        }
     }
 
     public class IntFinder : IFinder<int>

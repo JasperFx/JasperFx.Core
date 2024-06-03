@@ -162,7 +162,13 @@ public class AssemblyScanner : IAssemblyScanner
 
     public void ConnectImplementationsToTypesClosing(Type openGenericType, ServiceLifetime lifetime)
     {
-        var convention = new GenericConnectionScanner(openGenericType, lifetime);
+        var convention = new GenericConnectionScanner(openGenericType, t => lifetime);
+        With(convention);
+    }
+    
+    public void ConnectImplementationsToTypesClosing(Type openGenericType, Func<Type, ServiceLifetime> lifetimeRule)
+    {
+        var convention = new GenericConnectionScanner(openGenericType, lifetimeRule);
         With(convention);
     }
 
