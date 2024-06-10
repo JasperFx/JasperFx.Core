@@ -38,8 +38,10 @@ namespace JasperFx.Core.Reflection
             var method = property.SetMethod;
 
             if (method == null) return null;
+            
+            Expression actualValue = property.PropertyType == typeof(TProperty) ? value : Expression.Convert(value, property.PropertyType);
 
-            var callSetMethod = Expression.Call(target, method, value);
+            var callSetMethod = Expression.Call(target, method, actualValue);
 
             var lambda = Expression.Lambda<Action<TTarget, TProperty>>(callSetMethod, target, value);
 

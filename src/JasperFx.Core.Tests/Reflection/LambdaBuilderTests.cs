@@ -46,6 +46,20 @@ namespace JasperFx.Core.Tests.Reflection
 
             target.Number.ShouldBe(11);
         }
+        
+        [Fact]
+        public void can_build_setter_for_nullable_property()
+        {
+            var target = new Target { NullableNumber = 5 };
+            var prop = ReflectionHelper.GetProperty<Target>(x => x.NullableNumber);
+
+            var setter = LambdaBuilder.SetProperty<Target, int>(prop);
+
+            setter(target, 11);
+
+
+            target.NullableNumber.Value.ShouldBe(11);
+        }
 
 
         [Fact]
