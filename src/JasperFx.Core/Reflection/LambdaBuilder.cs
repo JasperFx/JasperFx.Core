@@ -32,8 +32,8 @@ namespace JasperFx.Core.Reflection
         /// <returns></returns>
         public static Action<TTarget, TProperty>? SetProperty<TTarget, TProperty>(PropertyInfo property)
         {
-            var target = Expression.Parameter(property.DeclaringType!, "target");
-            var value = Expression.Parameter(property.PropertyType, "value");
+            var target = Expression.Parameter(typeof(TTarget), "target");
+            var value = Expression.Parameter(typeof(TProperty), "value");
 
             var method = property.SetMethod;
 
