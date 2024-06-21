@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <Description>Common extension methods and reflection helpers used by JasperFx projects</Description>
-        <Version>1.7.2</Version>
+        <Version>1.8.0</Version>
         <Authors>Jeremy D. Miller</Authors>
         <AssemblyName>JasperFx.Core</AssemblyName>
         <PackageId>JasperFx.Core</PackageId>
