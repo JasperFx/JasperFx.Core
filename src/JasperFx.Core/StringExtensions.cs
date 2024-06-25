@@ -225,26 +225,22 @@ public static class StringExtensions
     /// </summary>
     /// <param name="content"></param>
     /// <returns></returns>
+    /// <remarks>Empty entries are omitted</remarks>
     public static string[] ToDelimitedArray(this string content)
     {
         return content.ToDelimitedArray(',');
     }
 
     /// <summary>
-    /// 
+    /// Break a comma delimited string into an array of trimmed strings
     /// </summary>
     /// <param name="content"></param>
     /// <param name="delimiter"></param>
     /// <returns></returns>
+    /// <remarks>Empty entries are omitted</remarks>
     public static string[] ToDelimitedArray(this string content, char delimiter)
     {
-        string[] array = content.Split(delimiter);
-        for (int i = 0; i < array.Length; i++)
-        {
-            array[i] = array[i].Trim();
-        }
-
-        return array;
+        return content.Split(delimiter, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
     }
 
     public static bool IsValidNumber(this string number)
