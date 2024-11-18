@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <Description>Common extension methods and reflection helpers used by JasperFx projects</Description>
-        <Version>1.8.0</Version>
+        <Version>1.9.0</Version>
         <Authors>Jeremy D. Miller</Authors>
         <AssemblyName>JasperFx.Core</AssemblyName>
         <PackageId>JasperFx.Core</PackageId>
@@ -19,5 +19,9 @@
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0" />
     </ItemGroup>
 </Project>
