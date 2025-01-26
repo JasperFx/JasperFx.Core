@@ -11,6 +11,16 @@ public class OptionsValue
     {
     }
 
+    public OptionsValue(string subject, string name, object rawValue)
+    {
+        Subject = subject;
+        Name = name;
+        RawValue = rawValue;
+        Value = rawValue?.ToString();
+
+        WriteValue(rawValue);
+    }
+
     // make this containing object full name.name
     // Can be deep? That would cover DurabilitySettings
     // use this to tag fancier tooltips
@@ -47,33 +57,39 @@ public class OptionsValue
             Type = PropertyType.Text, // safest guess
         };
 
+        description.WriteValue(value);
+        
+        return description;
+    }
+
+    public void WriteValue(object? value)
+    {
+        OptionsValue description;
         if (value == null)
         {
-            description.Type = PropertyType.None;
-            description.Value = "None";
+            Type = PropertyType.None;
+            Value = "None";
         }
         else if (value.GetType().IsNumeric())
         {
-            description.Type = PropertyType.Numeric;
+            Type = PropertyType.Numeric;
         }
         else if (value.GetType().IsEnum)
         {
-            description.Type = PropertyType.Enum;
+            Type = PropertyType.Enum;
         }
         else if (value is bool)
         {
-            description.Type = PropertyType.Boolean;
+            Type = PropertyType.Boolean;
         }
         else if (value is Uri)
         {
-            description.Type = PropertyType.Uri;
+            Type = PropertyType.Uri;
         }
         else if (value is TimeSpan time)
         {
-            description.Type = PropertyType.TimeSpan;
-            description.Value = time.ToDisplay();
+            Type = PropertyType.TimeSpan;
+            Value = time.ToDisplay();
         }
-        
-        return description;
     }
 }
