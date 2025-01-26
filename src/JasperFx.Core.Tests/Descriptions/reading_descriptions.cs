@@ -105,6 +105,8 @@ public class reading_descriptions
         theTarget.Name = "Shiner"; // our previous family dog
         var description = new OptionsDescription(theTarget);
         
+        description.Subject.ShouldBe(theTarget.GetType().FullNameInCode());
+        
         description.Properties.Select(x => x.Name)
             .ToArray()
             .ShouldBe(new string[]{"Name", "IsTrue", "Age", "Color", "Uri", "Duration"});

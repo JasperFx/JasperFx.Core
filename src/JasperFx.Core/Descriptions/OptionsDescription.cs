@@ -25,6 +25,9 @@ public class OptionsDescription
         }
 
         var type = subject.GetType();
+
+        Subject = type.FullNameInCode();
+        
         foreach (var property in type.GetProperties().Where(x => !x.HasAttribute<IgnoreDescriptionAttribute>()))
         {
             if (property.HasAttribute<ChildDescriptionAttribute>())
