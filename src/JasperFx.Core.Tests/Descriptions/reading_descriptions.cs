@@ -105,13 +105,29 @@ public class reading_descriptions
         theTarget.Name = "Shiner"; // our previous family dog
         var description = new OptionsDescription(theTarget);
         
+        description.Subject.ShouldBe(theTarget.GetType().FullNameInCode());
+        
         description.Properties.Select(x => x.Name)
             .ToArray()
             .ShouldBe(new string[]{"Name", "IsTrue", "Age", "Color", "Uri", "Duration"});
         
         description.Children["YesThis"].Properties.Select(x => x.Name)
             .ShouldHaveTheSameElementsAs("Number", "Suffix");
+        
+        
     }
+
+    [Fact]
+    public void read_from_children_that_implement_IDescribeMyself()
+    {
+        theTarget.Name = "Shiner"; // our previous family dog
+        var description = new OptionsDescription(theTarget);
+        
+        description.Children["DescribedThing"]
+            .PropertyFor("Foo").Value.ShouldBe("Bar");
+    }
+    
+    
 }
 
 public enum Color
@@ -140,6 +156,20 @@ public class Target
     {
         Number = 4, Suffix = "Jr"
     };
+
+    [ChildDescription]
+    public DescribedThing DescribedThing { get; set; } = new();
+}
+
+public class DescribedThing : IDescribeMyself
+{
+    public OptionsDescription ToDescription()
+    {
+        var description = new OptionsDescription(this);
+        description.AddValue("Foo", "Bar");
+
+        return description;
+    }
 }
 
 public class Thing
