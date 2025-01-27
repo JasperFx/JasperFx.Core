@@ -10,6 +10,13 @@ public interface IDescribeMyself
     OptionsDescription ToDescription();
 }
 
+public class OptionSet
+{
+    public string Subject { get; set; }
+    public string[] SummaryColumns { get; set; } = Array.Empty<string>();
+    public List<OptionsDescription> Rows { get; set; } = new();
+}
+
 /// <summary>
 /// Just a serializable, readonly view of system configuration to be used for diagnostic purposes
 /// </summary>
@@ -19,6 +26,11 @@ public class OptionsDescription
     public List<OptionsValue> Properties { get; set; } = new();
 
     public Dictionary<string, OptionsDescription> Children = new();
+
+    /// <summary>
+    /// Children "sets" of option descriptions
+    /// </summary>
+    public Dictionary<string, OptionSet> Sets = new();
     
     // For serialization
     public OptionsDescription()
@@ -54,6 +66,29 @@ public class OptionsDescription
         }
     }
 
+    public OptionSet AddChildSet(string name)
+    {
+        var subject = $"{Subject}.{name}";
+        var set = new OptionSet { Subject = subject };
+        Sets[name] = set;
+        return set;
+    }
+    
+    public OptionSet AddChildSet(string name, IEnumerable<object> children)
+    {
+        var set = AddChildSet(name);
+        foreach (var child in children)
+        {
+            var description = child is IDescribeMyself describes
+                ? describes.ToDescription()
+                : new OptionsDescription(child);
+            
+            set.Rows.Add(description);
+        }
+
+        return set;
+    }
+
     public OptionsValue AddValue(string name, object value)
     {
         var subject = $"{Subject}.{name}";
@@ -72,4 +107,8 @@ public class OptionsDescription
     {
         return Properties.FirstOrDefault(x => x.Name.EqualsIgnoreCase(name));
     }
+    
+    public Dictionary<string, string> Tags = new();
+
+    public List<MetricDescription> Metrics { get; set; } = new();
 }
