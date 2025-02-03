@@ -1,3 +1,4 @@
+using System.Reflection;
 using JasperFx.Core.Reflection;
 
 namespace JasperFx.Core.Descriptions;
@@ -15,6 +16,18 @@ public class OptionSet
     public string Subject { get; set; }
     public string[] SummaryColumns { get; set; } = Array.Empty<string>();
     public List<OptionsDescription> Rows { get; set; } = new();
+}
+
+public record AssemblyDescriptor(string Name, Version Version)
+{
+    public static AssemblyDescriptor For(Assembly assembly) =>
+        new AssemblyDescriptor(assembly.GetName().Name, assembly.GetName().Version);
+}
+
+public record TypeDescriptor(string Name, string FullName, string AssemblyName)
+{
+    public static TypeDescriptor For(Type type) =>
+        new TypeDescriptor(type.Name, type.FullName, type.Assembly.GetName().Name);
 }
 
 /// <summary>
