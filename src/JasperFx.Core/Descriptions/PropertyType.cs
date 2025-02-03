@@ -8,5 +8,8 @@ public enum PropertyType
     Enum,
     Uri,
     Boolean,
-    None
+    None,
+    Type,
+    StringArray,
+    Assembly
 }

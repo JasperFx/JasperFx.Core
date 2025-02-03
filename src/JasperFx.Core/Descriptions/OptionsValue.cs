@@ -64,7 +64,6 @@ public class OptionsValue
 
     public void WriteValue(object? value)
     {
-        OptionsValue description;
         if (value == null)
         {
             Type = PropertyType.None;
@@ -77,6 +76,7 @@ public class OptionsValue
         else if (value.GetType().IsEnum)
         {
             Type = PropertyType.Enum;
+            RawValue = null;
         }
         else if (value is bool)
         {
@@ -91,5 +91,23 @@ public class OptionsValue
             Type = PropertyType.TimeSpan;
             Value = time.ToDisplay();
         }
+        else if (value is Type type)
+        {
+            Type = PropertyType.Type;
+            RawValue = TypeDescriptor.For(type);
+            Value = type.FullNameInCode();
+        }
+        else if (value is string[] stringValues)
+        {
+            Type = PropertyType.StringArray;
+            Value = stringValues.Join(", ");
+        }
+        else if (value is Assembly assembly)
+        {
+            Type = PropertyType.Assembly;
+            RawValue = AssemblyDescriptor.For(assembly);
+            Value = RawValue.ToString();
+        }
+        
     }
 }
