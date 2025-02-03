@@ -59,7 +59,7 @@ public class reading_descriptions
         property.Name.ShouldBe("Color");
         property.Type.ShouldBe(PropertyType.Enum);
         property.Subject = $"{typeof(Target).FullNameInCode()}.{nameof(Target.Color)}";
-        property.RawValue.ShouldBe(theTarget.Color);
+        property.RawValue.ShouldBeNull(); // can't have this going over the wire
         property.Value.ShouldBe(theTarget.Color.ToString());
     }
     
