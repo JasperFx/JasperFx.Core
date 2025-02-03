@@ -6,6 +6,7 @@
         <Authors>Jeremy D. Miller</Authors>
         <AssemblyName>JasperFx.Core</AssemblyName>
         <PackageId>JasperFx.Core</PackageId>
+        <LangVersion>latest</LangVersion>
 
     </PropertyGroup>
 
