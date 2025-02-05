@@ -22,6 +22,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "build\_build.csproj", "{5F3F58F0-F24D-49CA-B359-707EF7320DC5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5F3F58F0-F24D-49CA-B359-707EF7320DC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F3F58F0-F24D-49CA-B359-707EF7320DC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{971B26E7-7991-415B-8AF2-C67086F79B54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{971B26E7-7991-415B-8AF2-C67086F79B54}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{971B26E7-7991-415B-8AF2-C67086F79B54}.Release|Any CPU.ActiveCfg = Release|Any CPU
