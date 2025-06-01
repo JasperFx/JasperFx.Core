@@ -1,3 +1,6 @@
+This repository has been subsumed by [JasperFx](https://github.com/JasperFx/jasperfx) and is mothballed
+
+
 # JasperFx.Core
 Common extension methods and reflection helpers used by JasperFx projects
 
